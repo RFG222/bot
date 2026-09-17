@@ -16,203 +16,114 @@
             --accent-home: #32d74b;  /* Зеленый - дом */
             --accent-other: #64d2ff; /* Голубой - другое */
         }
-        * {
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body {
-            margin: 0;
-            padding: 16px;
+            margin: 0; padding: 16px;
             background-color: var(--bg-color);
             color: var(--text-main);
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            user-select: none;
-            -webkit-user-select: none;
+            user-select: none; -webkit-user-select: none;
         }
-        .dashboard {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-        }
+        .dashboard { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
         .widget {
             background-color: var(--widget-bg);
-            border-radius: 20px;
-            padding: 16px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            cursor: pointer;
-            transition: transform 0.1s ease, background-color 0.2s;
+            border-radius: 20px; padding: 16px;
+            display: flex; flex-direction: column; justify-content: space-between;
+            cursor: pointer; transition: transform 0.1s ease, background-color 0.2s;
         }
-        .widget:active {
-            transform: scale(0.97);
-            background-color: #2c2c2e;
-        }
-        .widget-large {
-            grid-column: span 2;
-        }
-        .time {
-            font-size: 46px;
-            font-weight: bold;
-            margin: 0;
-            line-height: 1;
-        }
-        .date {
-            color: var(--text-sub);
-            font-size: 14px;
-            margin-top: 6px;
-            margin-bottom: 0;
-        }
+        .widget:active { transform: scale(0.97); background-color: #2c2c2e; }
+        .widget-large { grid-column: span 2; }
+        .time { font-size: 46px; font-weight: bold; margin: 0; line-height: 1; }
+        .date { color: var(--text-sub); font-size: 14px; margin-top: 6px; margin-bottom: 0; }
         .countdown {
-            margin-top: 14px;
-            font-size: 13px;
-            background: rgba(255, 255, 255, 0.12);
-            padding: 8px 14px;
-            border-radius: 12px;
-            font-weight: 500;
-            display: inline-block;
+            margin-top: 14px; font-size: 13px; background: rgba(255, 255, 255, 0.12);
+            padding: 8px 14px; border-radius: 12px; font-weight: 500; display: inline-block;
         }
-        .widget-title {
-            font-size: 15px;
-            font-weight: 600;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            width: 100%;
-            margin-bottom: 8px;
-        }
-        .widget-value {
-            font-size: 18px;
-            font-weight: bold;
-            margin-top: 4px;
-            word-break: break-word;
-        }
-        .widget-sub {
-            font-size: 12px;
-            color: var(--text-sub);
-            margin-top: 4px;
-        }
+        .widget-title { font-size: 15px; font-weight: 600; display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 8px; }
+        .widget-value { font-size: 18px; font-weight: bold; margin-top: 4px; word-break: break-word; }
+        .widget-sub { font-size: 12px; color: var(--text-sub); margin-top: 4px; }
 
         /* Модальные окна */
         .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            padding: 16px;
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.88); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            align-items: center; justify-content: center; z-index: 1000; padding: 16px;
         }
-        .modal.active {
-            display: flex;
-        }
+        .modal.active { display: flex; }
         .modal-content {
-            background: var(--widget-bg);
-            border-radius: 24px;
-            padding: 20px;
-            width: 100%;
-            max-width: 400px;
-            max-height: 85vh;
-            overflow-y: auto;
-            text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-        .days-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 6px;
-            width: 100%;
-            margin: 15px 0;
-        }
-        .day-card {
-            background: rgba(255,255,255,0.08);
-            text-align: center;
-            padding: 10px 2px;
-            border-radius: 10px;
-            font-size: 12px;
-            font-weight: bold;
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            cursor: pointer;
-        }
-        .day-card:active {
-            background: rgba(255,255,255,0.2);
-        }
-        .day-tag {
-            font-size: 9px;
-            padding: 3px 2px;
-            border-radius: 4px;
-            background: rgba(255,255,255,0.1);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            background: var(--widget-bg); border-radius: 24px; padding: 20px;
+            width: 100%; max-width: 420px; max-height: 88vh; overflow-y: auto;
+            text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1);
         }
 
-        /* Кнопки и инпуты */
+        /* Календарь на месяц */
+        .month-grid {
+            display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; width: 100%; margin: 12px 0;
+        }
+        .calendar-header { font-size: 11px; font-weight: bold; color: var(--text-sub); padding-bottom: 6px; }
+        .calendar-day {
+            background: rgba(255,255,255,0.08); text-align: center; padding: 6px 2px;
+            border-radius: 8px; font-size: 11px; font-weight: bold; display: flex; flex-direction: column;
+            justify-content: space-between; height: 46px; cursor: pointer;
+        }
+        .calendar-day:active { background: rgba(255,255,255,0.2); }
+        .calendar-day.past {
+            opacity: 0.3; background: rgba(255,255,255,0.03); cursor: not-allowed; pointer-events: none;
+        }
+        .calendar-day.today { border: 1px solid var(--accent-work); background: rgba(255,159,10,0.15); }
+        .day-num { font-size: 12px; }
+        .day-tag {
+            font-size: 8px; padding: 2px 1px; border-radius: 3px; background: rgba(255,255,255,0.1);
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+
+        /* Кнопки и формы */
         .btn-option {
-            width: 100%;
-            padding: 12px;
-            margin: 6px 0;
-            border: none;
-            border-radius: 14px;
-            font-size: 15px;
-            font-weight: bold;
-            color: white;
-            cursor: pointer;
+            width: 100%; padding: 12px; margin: 6px 0; border: none; border-radius: 14px;
+            font-size: 15px; font-weight: bold; color: white; cursor: pointer;
         }
-        .btn-option:active {
-            opacity: 0.8;
-        }
+        .btn-option:active { opacity: 0.8; }
         .btn-work { background: var(--accent-work); }
         .btn-study { background: var(--accent-study); }
         .btn-home { background: var(--accent-home); }
         .btn-other { background: var(--accent-other); }
+        .btn-danger { background: #ff453a; }
         .btn-close { background: rgba(255,255,255,0.15); color: var(--text-main); margin-top: 10px; }
 
         input, textarea {
-            width: 100%;
-            padding: 12px;
-            margin: 8px 0;
-            border-radius: 12px;
-            border: 1px solid rgba(255,255,255,0.2);
-            background: rgba(0,0,0,0.4);
-            color: white;
-            font-size: 14px;
-            outline: none;
+            width: 100%; padding: 12px; margin: 8px 0; border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.4);
+            color: white; font-size: 14px; outline: none; font-family: inherit;
         }
+
+        /* Заметки */
+        .note-card {
+            background: rgba(255,255,255,0.06); padding: 12px; border-radius: 14px; margin: 8px 0;
+            text-align: left; cursor: pointer; border: 1px solid rgba(255,255,255,0.05);
+        }
+        .note-card:active { background: rgba(255,255,255,0.12); }
+        .note-card-title { font-weight: bold; font-size: 15px; margin-bottom: 4px; }
+        .note-card-preview { font-size: 12px; color: var(--text-sub); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        
+        /* Вложения заметок */
+        .attachments-preview { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0; }
+        .file-chip {
+            background: rgba(255,255,255,0.1); padding: 6px 10px; border-radius: 8px;
+            font-size: 12px; display: flex; align-items: center; gap: 6px;
+        }
+        .img-preview { max-width: 100%; max-height: 140px; border-radius: 10px; object-fit: cover; margin-top: 6px; }
+
         .list-item {
-            background: rgba(255,255,255,0.05);
-            padding: 12px;
-            border-radius: 12px;
-            margin: 8px 0;
-            text-align: left;
-            font-size: 14px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 8px;
+            background: rgba(255,255,255,0.05); padding: 12px; border-radius: 12px; margin: 8px 0;
+            text-align: left; font-size: 14px; display: flex; justify-content: space-between; align-items: center;
         }
-        .delete-btn {
-            color: #ff453a;
-            font-weight: bold;
-            font-size: 16px;
-            padding: 4px 8px;
-            cursor: pointer;
-        }
+        .delete-btn { color: #ff453a; font-weight: bold; font-size: 16px; padding: 4px 8px; cursor: pointer; }
     </style>
 </head>
 <body>
 
     <div class="dashboard">
-        <!-- 1. ГЛАВНЫЙ ВИДЖЕТ (Время и важная дата) -->
+        <!-- 1. ГЛАВНЫЙ ВИДЖЕТ -->
         <div class="widget widget-large" onclick="openModal('modal-countdown')">
             <div style="text-align: center;">
                 <h1 class="time" id="clock">00:00</h1>
@@ -221,11 +132,11 @@
             </div>
         </div>
 
-        <!-- 2. ГРАФИК (На главном экране ТОЛЬКО СЕГОДНЯ) -->
+        <!-- 2. ГРАФИК (Сегодня) -->
         <div class="widget widget-large" onclick="openModal('modal-schedule')">
             <div class="widget-title">График на сегодня <span>📅</span></div>
             <div class="widget-value" id="today-focus-title">Сегодня: Загрузка...</div>
-            <div class="widget-sub">Нажми, чтобы настроить всю неделю ➔</div>
+            <div class="widget-sub">Нажми, чтобы открыть весь месяц ➔</div>
         </div>
 
         <!-- 3. ВАЖНОЕ -->
@@ -249,12 +160,12 @@
         </div>
     </div>
 
-    <!-- МОДАЛКА: ГРАФИК (Вся неделя) -->
+    <!-- МОДАЛКА: ГРАФИК (Весь месяц) -->
     <div class="modal" id="modal-schedule">
         <div class="modal-content">
-            <h3 style="margin-top: 0;">График на эту неделю</h3>
-            <p style="font-size: 12px; color: var(--text-sub);">Нажми на день, чтобы изменить фокус</p>
-            <div class="days-grid" id="days-container"></div>
+            <h3 id="modal-schedule-title" style="margin-top: 0;">Месяц</h3>
+            <p style="font-size: 12px; color: var(--text-sub);">Продшие дни серые и заблокированы</p>
+            <div class="month-grid" id="days-container"></div>
             <button class="btn-option btn-close" onclick="closeModal('modal-schedule')">Закрыть</button>
         </div>
     </div>
@@ -271,7 +182,7 @@
         </div>
     </div>
 
-    <!-- МОДАЛКА: НАСТРОЙКА ВАЖНОЙ ДАТЫ -->
+    <!-- МОДАЛКА: ВАЖНАЯ ДАТА -->
     <div class="modal" id="modal-countdown">
         <div class="modal-content">
             <h3 style="margin-top: 0;">Важная дата</h3>
@@ -293,14 +204,31 @@
         </div>
     </div>
 
-    <!-- МОДАЛКА: ЗАМЕТКИ -->
+    <!-- МОДАЛКА: СПИСОК ЗАМЕТОК -->
     <div class="modal" id="modal-notes">
         <div class="modal-content">
-            <h3 style="margin-top: 0;">Быстрые заметки</h3>
-            <div id="notes-list"></div>
-            <textarea id="note-text" rows="3" placeholder="Текст заметки..."></textarea>
-            <button class="btn-option btn-home" onclick="addNote()">Сохранить заметку</button>
+            <h3 style="margin-top: 0;">Мои Заметки</h3>
+            <button class="btn-option btn-home" onclick="openNoteEditor(null)">+ Создать заметку</button>
+            <div id="notes-list" style="margin-top: 10px;"></div>
             <button class="btn-option btn-close" onclick="closeModal('modal-notes')">Закрыть</button>
+        </div>
+    </div>
+
+    <!-- МОДАЛКА: РЕДАКТОР ЗАМЕТКИ -->
+    <div class="modal" id="modal-note-editor">
+        <div class="modal-content">
+            <h3 id="editor-heading" style="margin-top: 0;">Заметка</h3>
+            <input type="text" id="note-title-input" placeholder="Заголовок">
+            <textarea id="note-body-input" rows="6" placeholder="Текст заметки..."></textarea>
+            
+            <input type="file" id="note-file-input" style="display:none;" onchange="handleFileUpload(event)">
+            <button class="btn-option btn-other" onclick="document.getElementById('note-file-input').click()">📎 Прикрепить файл / фото</button>
+            
+            <div id="attachments-preview" class="attachments-preview"></div>
+
+            <button class="btn-option btn-work" onclick="saveCurrentNote()">Сохранить</button>
+            <button class="btn-option btn-danger" id="btn-delete-note" onclick="deleteCurrentNote()" style="display:none;">Удалить</button>
+            <button class="btn-option btn-close" onclick="closeModal('modal-note-editor')">Назад</button>
         </div>
     </div>
 
@@ -316,35 +244,24 @@
     </div>
 
     <script>
-        // Безопасная инициализация Telegram SDK
         try {
             if (window.Telegram && window.Telegram.WebApp) {
                 window.Telegram.WebApp.ready();
                 window.Telegram.WebApp.expand();
             }
-        } catch (e) {
-            console.log("Telegram WebApp not initialized:", e);
-        }
+        } catch (e) {}
 
-        // Безопасное чтение из LocalStorage
         function getStorage(key, fallback) {
             try {
                 const item = localStorage.getItem(key);
                 return item ? JSON.parse(item) : fallback;
-            } catch (e) {
-                return fallback;
-            }
+            } catch (e) { return fallback; }
         }
 
         function setStorage(key, value) {
-            try {
-                localStorage.setItem(key, JSON.stringify(value));
-            } catch (e) {
-                console.error("Storage save error:", e);
-            }
+            try { localStorage.setItem(key, JSON.stringify(value)); } catch (e) {}
         }
 
-        // Глобальные функции модалок
         function openModal(id) {
             const el = document.getElementById(id);
             if (el) el.classList.add('active');
@@ -355,31 +272,36 @@
             if (el) el.classList.remove('active');
         }
 
-        const daysNames = ['ПН', 'ВТ', 'СР', 'ЧТ', 'ПТ', 'СБ', 'ВС'];
-        let selectedDayIndex = null;
+        const monthNames = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"];
+        const weekDaysMin = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
+        let selectedDayNumber = null;
 
-        let scheduleData = getStorage('schedule', {});
+        // Динамический ключ текущего месяца для автообновления при наступлении нового месяца
+        function getMonthKey() {
+            const d = new Date();
+            return `schedule_${d.getFullYear()}_${d.getMonth() + 1}`;
+        }
+
+        let scheduleData = getStorage(getMonthKey(), {});
         let importantData = getStorage('important', []);
-        let notesData = getStorage('notes', []);
+        let notesData = getStorage('notes_v2', []);
         let targetEvent = getStorage('targetEvent', { title: 'Диплом', date: '' });
+        
+        let editingNoteId = null;
+        let currentAttachments = [];
 
-        // Часы и дата
+        // Часы и Главный экран
         function updateClock() {
             const now = new Date();
-            const clockEl = document.getElementById('clock');
-            const dateEl = document.getElementById('date-display');
-            
-            if (clockEl) clockEl.innerText = now.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
-            if (dateEl) dateEl.innerText = now.toLocaleDateString('ru-RU', { weekday: 'long', day: 'numeric', month: 'long' });
+            document.getElementById('clock').innerText = now.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+            document.getElementById('date-display').innerText = now.toLocaleDateString('ru-RU', { weekday: 'long', day: 'numeric', month: 'long' });
 
-            let jsDay = now.getDay();
-            let todayIndex = jsDay === 0 ? 6 : jsDay - 1; 
-            
-            const todayTheme = scheduleData[todayIndex] || 'Не задано';
+            const todayNum = now.getDate();
+            const todayTheme = scheduleData[todayNum] || 'Не задано';
             const todayTitleEl = document.getElementById('today-focus-title');
             
             if (todayTitleEl) {
-                todayTitleEl.innerText = `${daysNames[todayIndex]}: ${todayTheme}`;
+                todayTitleEl.innerText = `${todayNum} ${monthNames[now.getMonth()].slice(0, 3)}: ${todayTheme}`;
                 let color = 'var(--text-sub)';
                 if (todayTheme === 'Работа') color = 'var(--accent-work)';
                 if (todayTheme === 'Учеба') color = 'var(--accent-study)';
@@ -388,7 +310,6 @@
                 todayTitleEl.style.color = color;
             }
 
-            // Таймер
             const countBtn = document.getElementById('countdown-btn');
             if (countBtn) {
                 if (targetEvent && targetEvent.date) {
@@ -403,14 +324,44 @@
         setInterval(updateClock, 1000);
         updateClock();
 
-        // Рендер Графика
-        function renderDays() {
+        // Календарь на Месяц
+        function renderMonthCalendar() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = now.getMonth();
+            const todayDate = now.getDate();
+
+            document.getElementById('modal-schedule-title').innerText = `${monthNames[month]} ${year}`;
+
+            const firstDay = new Date(year, month, 1);
+            let firstDayIndex = firstDay.getDay();
+            firstDayIndex = firstDayIndex === 0 ? 6 : firstDayIndex - 1;
+
+            const totalDays = new Date(year, month + 1, 0).getDate();
             const container = document.getElementById('days-container');
-            if (!container) return;
             container.innerHTML = '';
-            
-            daysNames.forEach((day, index) => {
-                const theme = scheduleData[index] || 'Свободно';
+
+            // Шапка дней недели
+            weekDaysMin.forEach(d => {
+                const h = document.createElement('div');
+                h.className = 'calendar-header';
+                h.innerText = d;
+                container.appendChild(h);
+            });
+
+            // Пустые ячейки смещения
+            for (let i = 0; i < firstDayIndex; i++) {
+                const empty = document.createElement('div');
+                empty.className = 'calendar-day past';
+                container.appendChild(empty);
+            }
+
+            // Дни месяца
+            for (let day = 1; day <= totalDays; day++) {
+                const theme = scheduleData[day] || 'Свободно';
+                const isPast = day < todayDate;
+                const isToday = day === todayDate;
+
                 let colorClass = 'var(--text-sub)';
                 if (theme === 'Работа') colorClass = 'var(--accent-work)';
                 if (theme === 'Учеба') colorClass = 'var(--accent-study)';
@@ -418,29 +369,33 @@
                 if (theme === 'Другое') colorClass = 'var(--accent-other)';
 
                 const dayCard = document.createElement('div');
-                dayCard.className = 'day-card';
-                dayCard.onclick = function() {
-                    selectedDayIndex = index;
-                    document.getElementById('modal-theme-title').innerText = `Тема на ${daysNames[index]}`;
-                    openModal('modal-theme');
-                };
+                dayCard.className = `calendar-day ${isPast ? 'past' : ''} ${isToday ? 'today' : ''}`;
+                
+                if (!isPast) {
+                    dayCard.onclick = function() {
+                        selectedDayNumber = day;
+                        document.getElementById('modal-theme-title').innerText = `Тема на ${day} ${monthNames[month].slice(0, 3).toLowerCase()}`;
+                        openModal('modal-theme');
+                    };
+                }
+
                 dayCard.innerHTML = `
-                    <div>${day}</div>
+                    <div class="day-num">${day}</div>
                     <div class="day-tag" style="color: ${colorClass}">${theme}</div>
                 `;
                 container.appendChild(dayCard);
-            });
+            }
         }
 
         function selectTheme(themeName) {
             if (themeName === 'Другое') {
                 const custom = prompt("Введи свою тему дня:");
-                if (custom) scheduleData[selectedDayIndex] = custom;
+                if (custom) scheduleData[selectedDayNumber] = custom;
             } else {
-                scheduleData[selectedDayIndex] = themeName;
+                scheduleData[selectedDayNumber] = themeName;
             }
-            setStorage('schedule', scheduleData);
-            renderDays();
+            setStorage(getMonthKey(), scheduleData);
+            renderMonthCalendar();
             updateClock();
             closeModal('modal-theme');
         }
@@ -495,49 +450,133 @@
             renderImportant();
         }
 
-        // Заметки
-        function renderNotes() {
+        // Заметки (Полноценный Редактор)
+        function renderNotesList() {
             const list = document.getElementById('notes-list');
             if (!list) return;
             list.innerHTML = '';
-            notesData.forEach((item, i) => {
-                const itemDiv = document.createElement('div');
-                itemDiv.className = 'list-item';
-                itemDiv.innerHTML = `<span>📝 ${item}</span>`;
+
+            notesData.forEach((note) => {
+                const card = document.createElement('div');
+                card.className = 'note-card';
+                card.onclick = function() { openNoteEditor(note.id); };
                 
-                const delSpan = document.createElement('span');
-                delSpan.className = 'delete-btn';
-                delSpan.innerText = '✕';
-                delSpan.onclick = function() { deleteNote(i); };
-                
-                itemDiv.appendChild(delSpan);
-                list.appendChild(itemDiv);
+                const hasAttach = note.attachments && note.attachments.length > 0 ? ' 📎' : '';
+                card.innerHTML = `
+                    <div class="note-card-title">${note.title || 'Без названия'}${hasAttach}</div>
+                    <div class="note-card-preview">${note.body || 'Пустая заметка...'}</div>
+                `;
+                list.appendChild(card);
             });
+
             const countEl = document.getElementById('notes-count');
             if (countEl) countEl.innerText = `${notesData.length} записей`;
         }
 
-        function addNote() {
-            const textarea = document.getElementById('note-text');
-            const val = textarea ? textarea.value.trim() : '';
-            if (val) {
-                notesData.push(val);
-                setStorage('notes', notesData);
-                textarea.value = '';
-                renderNotes();
+        function openNoteEditor(id) {
+            editingNoteId = id;
+            currentAttachments = [];
+            
+            const titleInput = document.getElementById('note-title-input');
+            const bodyInput = document.getElementById('note-body-input');
+            const deleteBtn = document.getElementById('btn-delete-note');
+
+            if (id !== null) {
+                const note = notesData.find(n => n.id === id);
+                if (note) {
+                    titleInput.value = note.title || '';
+                    bodyInput.value = note.body || '';
+                    currentAttachments = note.attachments ? [...note.attachments] : [];
+                    deleteBtn.style.display = 'block';
+                }
+            } else {
+                titleInput.value = '';
+                bodyInput.value = '';
+                deleteBtn.style.display = 'none';
+            }
+
+            renderAttachments();
+            openModal('modal-note-editor');
+        }
+
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                currentAttachments.push({
+                    name: file.name,
+                    type: file.type,
+                    data: e.target.result
+                });
+                renderAttachments();
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function renderAttachments() {
+            const container = document.getElementById('attachments-preview');
+            container.innerHTML = '';
+            
+            currentAttachments.forEach((att, idx) => {
+                if (att.type.startsWith('image/')) {
+                    const img = document.createElement('img');
+                    img.src = att.data;
+                    img.className = 'img-preview';
+                    container.appendChild(img);
+                } else {
+                    const chip = document.createElement('div');
+                    chip.className = 'file-chip';
+                    chip.innerText = `📄 ${att.name}`;
+                    container.appendChild(chip);
+                }
+            });
+        }
+
+        function saveCurrentNote() {
+            const title = document.getElementById('note-title-input').value.trim();
+            const body = document.getElementById('note-body-input').value.trim();
+
+            if (!title && !body) {
+                closeModal('modal-note-editor');
+                return;
+            }
+
+            if (editingNoteId !== null) {
+                const note = notesData.find(n => n.id === editingNoteId);
+                if (note) {
+                    note.title = title;
+                    note.body = body;
+                    note.attachments = currentAttachments;
+                }
+            } else {
+                notesData.unshift({
+                    id: Date.now(),
+                    title: title,
+                    body: body,
+                    attachments: currentAttachments
+                });
+            }
+
+            setStorage('notes_v2', notesData);
+            renderNotesList();
+            closeModal('modal-note-editor');
+        }
+
+        function deleteCurrentNote() {
+            if (editingNoteId !== null) {
+                notesData = notesData.filter(n => n.id !== editingNoteId);
+                setStorage('notes_v2', notesData);
+                renderNotesList();
+                closeModal('modal-note-editor');
             }
         }
 
-        function deleteNote(i) {
-            notesData.splice(i, 1);
-            setStorage('notes', notesData);
-            renderNotes();
-        }
-
         // Старт
-        renderDays();
+        renderMonthCalendar();
         renderImportant();
-        renderNotes();
+        renderNotesList();
     </script>
 </body>
 </html>
