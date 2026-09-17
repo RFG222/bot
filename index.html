@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Мой Дашборд</title>
+    <!-- Подключаем скрипт Telegram -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        :root {
+            --bg-color: #000000;
+            --widget-bg: #1c1c1e;
+            --text-main: #ffffff;
+            --text-sub: #8e8e93;
+            --accent-work: #ff9f0a; /* Оранжевый - работа */
+            --accent-study: #bf5af2; /* Фиолетовый - учеба */
+            --accent-home: #32d74b; /* Зеленый - дом */
+        }
+        body {
+            margin: 0; padding: 16px;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        .widget {
+            background-color: var(--widget-bg);
+            border-radius: 22px;
+            padding: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+            display: flex;
+            flex-direction: column;
+        }
+        /* Главный виджет на всю ширину */
+        .widget-large {
+            grid-column: span 2;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        /* Часы */
+        .time { font-size: 48px; font-weight: bold; margin: 0; }
+        .date { color: var(--text-sub); font-size: 16px; margin-top: 4px; }
+        .countdown { margin-top: 12px; font-size: 14px; background: rgba(255,255,255,0.1); padding: 6px 12px; border-radius: 12px; }
+        
+        /* Заголовки виджетов */
+        .widget-title { font-size: 18px; font-weight: 600; margin-bottom: 12px; display: flex; justify-content: space-between;}
+        
+        /* График */
+        .days-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+        .day { 
+            background: rgba(255,255,255,0.05); text-align: center; padding: 8px 0; 
+            border-radius: 8px; font-size: 12px; font-weight: bold;
+        }
+        .day.active { border: 1px solid var(--accent-work); color: var(--accent-work); }
+
+        /* Иконки в виджетах */
+        .icon-box { font-size: 32px; margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+
+    <div class="dashboard">
+        <!-- 1. ГЛАВНЫЙ ВИДЖЕТ (Время и Таймер) -->
+        <div class="widget widget-large">
+            <h1 class="time" id="clock">00:00</h1>
+            <p class="date" id="date-display">Понедельник, 1 Января</p>
+            <div class="countdown">🎯 До диплома: 184 дня</div>
+        </div>
+
+        <!-- 2. ГРАФИК -->
+        <div class="widget">
+            <div class="widget-title">График <span>⚙️</span></div>
+            <div class="days-grid">
+                <div class="day">П</div>
+                <div class="day active">В</div>
+                <div class="day">С</div>
+                <div class="day">Ч</div>
+                <div class="day">П</div>
+                <div class="day">С</div>
+                <div class="day">В</div>
+            </div>
+            <p style="font-size: 12px; color: var(--text-sub); margin-top: 12px;">Сегодня фокус:<br><span style="color: var(--accent-work);">Работа</span></p>
+        </div>
+
+        <!-- 3. ВАЖНОЕ -->
+        <div class="widget">
+            <div class="widget-title">Важное <span>📌</span></div>
+            <div class="icon-box">📅</div>
+            <p style="font-size: 12px; color: var(--text-sub);">2 события на этой неделе.</p>
+        </div>
+
+        <!-- 4. ЗАМЕТКИ -->
+        <div class="widget">
+            <div class="widget-title">Заметки <span>📝</span></div>
+            <div class="icon-box">📓</div>
+            <p style="font-size: 12px; color: var(--text-sub);">4 активных заметки</p>
+        </div>
+
+        <!-- 5. БОТ (Копилка) -->
+        <div class="widget">
+            <div class="widget-title">Бот <span>📥</span></div>
+            <div class="icon-box">🤖</div>
+            <p style="font-size: 12px; color: var(--text-sub);">3 новых сообщения</p>
+        </div>
+    </div>
+
+    <script>
+        // Сообщаем Telegram, что приложение готово
+        window.Telegram.WebApp.ready();
+        window.Telegram.WebApp.expand(); // Разворачиваем на весь экран
+
+        // Скрипт для обновления часов
+        function updateTime() {
+            const now = new Date();
+            let hours = now.getHours().toString().padStart(2, '0');
+            let minutes = now.getMinutes().toString().padStart(2, '0');
+            document.getElementById('clock').innerText = `${hours}:${minutes}`;
+            
+            const options = { weekday: 'long', month: 'long', day: 'numeric' };
+            document.getElementById('date-display').innerText = now.toLocaleDateString('ru-RU', options);
+        }
+        setInterval(updateTime, 1000);
+        updateTime();
+    </script>
+</body>
+</html>
