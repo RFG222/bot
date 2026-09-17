@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Мой Дашборд</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
@@ -16,8 +16,13 @@
             --accent-home: #32d74b;  /* Зеленый - дом */
             --accent-other: #64d2ff; /* Голубой - другое */
         }
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
         body {
-            margin: 0; padding: 16px;
+            margin: 0;
+            padding: 16px;
             background-color: var(--bg-color);
             color: var(--text-main);
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -37,78 +42,190 @@
             flex-direction: column;
             justify-content: space-between;
             cursor: pointer;
-            transition: transform 0.1s ease;
-            box-sizing: border-box;
+            transition: transform 0.1s ease, background-color 0.2s;
         }
-        .widget:active { transform: scale(0.97); }
-        .widget-large { grid-column: span 2; align-items: center; text-align: center; }
-        
-        .time { font-size: 46px; font-weight: bold; margin: 0; }
-        .date { color: var(--text-sub); font-size: 14px; margin-top: 2px; }
-        .countdown { 
-            margin-top: 12px; font-size: 13px; background: rgba(255,255,255,0.1); 
-            padding: 8px 14px; border-radius: 12px; cursor: pointer; font-weight: 500;
+        .widget:active {
+            transform: scale(0.97);
+            background-color: #2c2c2e;
         }
-        
-        .widget-title { font-size: 15px; font-weight: 600; display: flex; justify-content: space-between; width: 100%; margin-bottom: 8px;}
-        .widget-value { font-size: 20px; font-weight: bold; margin-top: 4px; }
-        .widget-sub { font-size: 12px; color: var(--text-sub); margin-top: 4px; }
-        
+        .widget-large {
+            grid-column: span 2;
+        }
+        .time {
+            font-size: 46px;
+            font-weight: bold;
+            margin: 0;
+            line-height: 1;
+        }
+        .date {
+            color: var(--text-sub);
+            font-size: 14px;
+            margin-top: 6px;
+            margin-bottom: 0;
+        }
+        .countdown {
+            margin-top: 14px;
+            font-size: 13px;
+            background: rgba(255, 255, 255, 0.12);
+            padding: 8px 14px;
+            border-radius: 12px;
+            font-weight: 500;
+            display: inline-block;
+        }
+        .widget-title {
+            font-size: 15px;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            margin-bottom: 8px;
+        }
+        .widget-value {
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 4px;
+            word-break: break-word;
+        }
+        .widget-sub {
+            font-size: 12px;
+            color: var(--text-sub);
+            margin-top: 4px;
+        }
+
         /* Модальные окна */
         .modal {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85); backdrop-filter: blur(10px);
-            align-items: center; justify-content: center; z-index: 100;
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 16px;
+        }
+        .modal.active {
+            display: flex;
         }
         .modal-content {
-            background: var(--widget-bg); border-radius: 24px; padding: 20px; width: 85%;
-            max-height: 80vh; overflow-y: auto; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            background: var(--widget-bg);
+            border-radius: 24px;
+            padding: 20px;
+            width: 100%;
+            max-width: 400px;
+            max-height: 85vh;
+            overflow-y: auto;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,255,255,0.1);
         }
-        
-        /* Сетка для дней внутри модалки */
-        .days-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; width: 100%; margin: 15px 0; }
-        .day-card { 
-            background: rgba(255,255,255,0.08); text-align: center; padding: 10px 2px; 
-            border-radius: 10px; font-size: 12px; font-weight: bold; display: flex; flex-direction: column; gap: 6px; cursor: pointer;
+        .days-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 6px;
+            width: 100%;
+            margin: 15px 0;
         }
-        .day-tag { font-size: 9px; padding: 3px; border-radius: 4px; background: rgba(255,255,255,0.1); }
-        
+        .day-card {
+            background: rgba(255,255,255,0.08);
+            text-align: center;
+            padding: 10px 2px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: bold;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            cursor: pointer;
+        }
+        .day-card:active {
+            background: rgba(255,255,255,0.2);
+        }
+        .day-tag {
+            font-size: 9px;
+            padding: 3px 2px;
+            border-radius: 4px;
+            background: rgba(255,255,255,0.1);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
         /* Кнопки и инпуты */
         .btn-option {
-            width: 100%; padding: 12px; margin: 6px 0; border: none; border-radius: 14px;
-            font-size: 15px; font-weight: bold; color: white; cursor: pointer;
+            width: 100%;
+            padding: 12px;
+            margin: 6px 0;
+            border: none;
+            border-radius: 14px;
+            font-size: 15px;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+        }
+        .btn-option:active {
+            opacity: 0.8;
         }
         .btn-work { background: var(--accent-work); }
         .btn-study { background: var(--accent-study); }
         .btn-home { background: var(--accent-home); }
         .btn-other { background: var(--accent-other); }
-        .btn-close { background: rgba(255,255,255,0.1); color: var(--text-main); margin-top: 10px; }
-        
+        .btn-close { background: rgba(255,255,255,0.15); color: var(--text-main); margin-top: 10px; }
+
         input, textarea {
-            width: 90%; padding: 12px; margin: 8px 0; border-radius: 12px; border: 1px solid rgba(255,255,255,0.2);
-            background: rgba(0,0,0,0.4); color: white; font-size: 14px; outline: none;
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(0,0,0,0.4);
+            color: white;
+            font-size: 14px;
+            outline: none;
         }
         .list-item {
-            background: rgba(255,255,255,0.05); padding: 10px; border-radius: 10px; 
-            margin: 6px 0; text-align: left; font-size: 13px; display: flex; justify-content: space-between;
+            background: rgba(255,255,255,0.05);
+            padding: 12px;
+            border-radius: 12px;
+            margin: 8px 0;
+            text-align: left;
+            font-size: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+        }
+        .delete-btn {
+            color: #ff453a;
+            font-weight: bold;
+            font-size: 16px;
+            padding: 4px 8px;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
 
     <div class="dashboard">
-        <!-- 1. ГЛАВНЫЙ ВИДЖЕТ (Время и дата) -->
-        <div class="widget widget-large">
-            <h1 class="time" id="clock">00:00</h1>
-            <p class="date" id="date-display">Загрузка...</p>
-            <div class="countdown" id="countdown-btn" onclick="openModal('modal-countdown')">🎯 Задать важную дату</div>
+        <!-- 1. ГЛАВНЫЙ ВИДЖЕТ (Время и важная дата) -->
+        <div class="widget widget-large" onclick="openModal('modal-countdown')">
+            <div style="text-align: center;">
+                <h1 class="time" id="clock">00:00</h1>
+                <p class="date" id="date-display">Загрузка...</p>
+                <div class="countdown" id="countdown-btn">🎯 Задать важную дату</div>
+            </div>
         </div>
 
         <!-- 2. ГРАФИК (На главном экране ТОЛЬКО СЕГОДНЯ) -->
         <div class="widget widget-large" onclick="openModal('modal-schedule')">
             <div class="widget-title">График на сегодня <span>📅</span></div>
             <div class="widget-value" id="today-focus-title">Сегодня: Загрузка...</div>
-            <div class="widget-sub" id="today-focus-tag">Нажми, чтобы настроить всю неделю ➔</div>
+            <div class="widget-sub">Нажми, чтобы настроить всю неделю ➔</div>
         </div>
 
         <!-- 3. ВАЖНОЕ -->
@@ -128,14 +245,14 @@
         <!-- 5. БОТ (Копилка) -->
         <div class="widget widget-large" onclick="openModal('modal-stash')">
             <div class="widget-title">Копилка из чата 📥</div>
-            <div class="widget-sub" style="text-align: left;">Скидывай в диалог с ботом тексты и фото — они хранятся в базе данных.</div>
+            <div class="widget-sub">Все твои мысли и фото из чата сохранены в БД</div>
         </div>
     </div>
 
     <!-- МОДАЛКА: ГРАФИК (Вся неделя) -->
     <div class="modal" id="modal-schedule">
         <div class="modal-content">
-            <h3>График на эту неделю</h3>
+            <h3 style="margin-top: 0;">График на эту неделю</h3>
             <p style="font-size: 12px; color: var(--text-sub);">Нажми на день, чтобы изменить фокус</p>
             <div class="days-grid" id="days-container"></div>
             <button class="btn-option btn-close" onclick="closeModal('modal-schedule')">Закрыть</button>
@@ -145,7 +262,7 @@
     <!-- МОДАЛКА: ВЫБОР ТЕМЫ ДНЯ -->
     <div class="modal" id="modal-theme">
         <div class="modal-content">
-            <h3 id="modal-theme-title">Тема дня</h3>
+            <h3 id="modal-theme-title" style="margin-top: 0;">Тема дня</h3>
             <button class="btn-option btn-work" onclick="selectTheme('Работа')">💼 Работа</button>
             <button class="btn-option btn-study" onclick="selectTheme('Учеба')">🎓 Учеба</button>
             <button class="btn-option btn-home" onclick="selectTheme('Дом')">🏠 Дом</button>
@@ -157,7 +274,7 @@
     <!-- МОДАЛКА: НАСТРОЙКА ВАЖНОЙ ДАТЫ -->
     <div class="modal" id="modal-countdown">
         <div class="modal-content">
-            <h3>Важная дата</h3>
+            <h3 style="margin-top: 0;">Важная дата</h3>
             <input type="text" id="target-title" placeholder="Название (например: Диплом)">
             <input type="date" id="target-date">
             <button class="btn-option btn-work" onclick="saveTargetDate()">Сохранить</button>
@@ -168,7 +285,7 @@
     <!-- МОДАЛКА: ВАЖНОЕ -->
     <div class="modal" id="modal-important">
         <div class="modal-content">
-            <h3>Важные события</h3>
+            <h3 style="margin-top: 0;">Важные события</h3>
             <div id="important-list"></div>
             <input type="text" id="imp-text" placeholder="Новое событие...">
             <button class="btn-option btn-study" onclick="addImportant()">Добавить</button>
@@ -179,9 +296,9 @@
     <!-- МОДАЛКА: ЗАМЕТКИ -->
     <div class="modal" id="modal-notes">
         <div class="modal-content">
-            <h3>Быстрые заметки</h3>
+            <h3 style="margin-top: 0;">Быстрые заметки</h3>
             <div id="notes-list"></div>
-            <textarea id="note-text" placeholder="Текст заметки..."></textarea>
+            <textarea id="note-text" rows="3" placeholder="Текст заметки..."></textarea>
             <button class="btn-option btn-home" onclick="addNote()">Сохранить заметку</button>
             <button class="btn-option btn-close" onclick="closeModal('modal-notes')">Закрыть</button>
         </div>
@@ -190,77 +307,119 @@
     <!-- МОДАЛКА: БОТ КОПИЛКА -->
     <div class="modal" id="modal-stash">
         <div class="modal-content">
-            <h3>Копилка из бота</h3>
-            <p style="font-size: 13px; color: var(--text-sub); text-align: left;">
-                Все входящие сообщения, мысли и фотографии, которые ты отправляешь боту в чате, автоматически записываются в базу данных SQLite (`dashboard.db`) на твоем сервере/ПК.
+            <h3 style="margin-top: 0;">Копилка из бота</h3>
+            <p style="font-size: 13px; color: var(--text-sub); text-align: left; line-height: 1.4;">
+                Все входящие сообщения, мысли и фотографии, которые ты отправляешь боту в чате, автоматически записываются в базу данных SQLite (<code>dashboard.db</code>) на твоем сервере.
             </p>
             <button class="btn-option btn-close" onclick="closeModal('modal-stash')">Понятно</button>
         </div>
     </div>
 
     <script>
-        const tg = window.Telegram.WebApp;
-        tg.ready();
-        tg.expand();
+        // Безопасная инициализация Telegram SDK
+        try {
+            if (window.Telegram && window.Telegram.WebApp) {
+                window.Telegram.WebApp.ready();
+                window.Telegram.WebApp.expand();
+            }
+        } catch (e) {
+            console.log("Telegram WebApp not initialized:", e);
+        }
+
+        // Безопасное чтение из LocalStorage
+        function getStorage(key, fallback) {
+            try {
+                const item = localStorage.getItem(key);
+                return item ? JSON.parse(item) : fallback;
+            } catch (e) {
+                return fallback;
+            }
+        }
+
+        function setStorage(key, value) {
+            try {
+                localStorage.setItem(key, JSON.stringify(value));
+            } catch (e) {
+                console.error("Storage save error:", e);
+            }
+        }
+
+        // Глобальные функции модалок
+        function openModal(id) {
+            const el = document.getElementById(id);
+            if (el) el.classList.add('active');
+        }
+
+        function closeModal(id) {
+            const el = document.getElementById(id);
+            if (el) el.classList.remove('active');
+        }
 
         const daysNames = ['ПН', 'ВТ', 'СР', 'ЧТ', 'ПТ', 'СБ', 'ВС'];
         let selectedDayIndex = null;
 
-        // Данные из Хранилища
-        let scheduleData = JSON.parse(localStorage.getItem('schedule')) || {};
-        let importantData = JSON.parse(localStorage.getItem('important')) || [];
-        let notesData = JSON.parse(localStorage.getItem('notes')) || [];
-        let targetEvent = JSON.parse(localStorage.getItem('targetEvent')) || { title: 'Диплом', date: '' };
+        let scheduleData = getStorage('schedule', {});
+        let importantData = getStorage('important', []);
+        let notesData = getStorage('notes', []);
+        let targetEvent = getStorage('targetEvent', { title: 'Диплом', date: '' });
 
-        // Управление модалками
-        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
-        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-
-        // Часы и Дата + Главный экран Графика
+        // Часы и дата
         function updateClock() {
             const now = new Date();
-            document.getElementById('clock').innerText = now.toLocaleTimeString('ru-RU', {hour: '2-digit', minute:'2-digit'});
-            document.getElementById('date-display').innerText = now.toLocaleDateString('ru-RU', { weekday: 'long', day: 'numeric', month: 'long' });
+            const clockEl = document.getElementById('clock');
+            const dateEl = document.getElementById('date-display');
+            
+            if (clockEl) clockEl.innerText = now.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+            if (dateEl) dateEl.innerText = now.toLocaleDateString('ru-RU', { weekday: 'long', day: 'numeric', month: 'long' });
 
-            // Определение сегодняшнего дня (0 = Пн, 6 = Вс)
             let jsDay = now.getDay();
             let todayIndex = jsDay === 0 ? 6 : jsDay - 1; 
             
             const todayTheme = scheduleData[todayIndex] || 'Не задано';
-            document.getElementById('today-focus-title').innerText = `${daysNames[todayIndex]}: ${todayTheme}`;
+            const todayTitleEl = document.getElementById('today-focus-title');
             
-            let color = 'var(--text-sub)';
-            if(todayTheme === 'Работа') color = 'var(--accent-work)';
-            if(todayTheme === 'Учеба') color = 'var(--accent-study)';
-            if(todayTheme === 'Дом') color = 'var(--accent-home)';
-            if(todayTheme === 'Другое') color = 'var(--accent-other)';
-            document.getElementById('today-focus-title').style.color = color;
+            if (todayTitleEl) {
+                todayTitleEl.innerText = `${daysNames[todayIndex]}: ${todayTheme}`;
+                let color = 'var(--text-sub)';
+                if (todayTheme === 'Работа') color = 'var(--accent-work)';
+                if (todayTheme === 'Учеба') color = 'var(--accent-study)';
+                if (todayTheme === 'Дом') color = 'var(--accent-home)';
+                if (todayTheme === 'Другое') color = 'var(--accent-other)';
+                todayTitleEl.style.color = color;
+            }
 
             // Таймер
-            if(targetEvent.date) {
-                const diff = Math.ceil((new Date(targetEvent.date) - now) / (1000 * 60 * 60 * 24));
-                document.getElementById('countdown-btn').innerText = `🎯 ${targetEvent.title}: ${diff > 0 ? diff + ' дн.' : 'Сегодня!'}`;
+            const countBtn = document.getElementById('countdown-btn');
+            if (countBtn) {
+                if (targetEvent && targetEvent.date) {
+                    const diff = Math.ceil((new Date(targetEvent.date) - now) / (1000 * 60 * 60 * 24));
+                    countBtn.innerText = `🎯 ${targetEvent.title}: ${diff > 0 ? diff + ' дн.' : 'Сегодня!'}`;
+                } else {
+                    countBtn.innerText = '🎯 Задать важную дату';
+                }
             }
         }
+
         setInterval(updateClock, 1000);
         updateClock();
 
-        // Рендер Графика (Внутри модалки)
+        // Рендер Графика
         function renderDays() {
             const container = document.getElementById('days-container');
+            if (!container) return;
             container.innerHTML = '';
             
             daysNames.forEach((day, index) => {
                 const theme = scheduleData[index] || 'Свободно';
                 let colorClass = 'var(--text-sub)';
-                if(theme === 'Работа') colorClass = 'var(--accent-work)';
-                if(theme === 'Учеба') colorClass = 'var(--accent-study)';
-                if(theme === 'Дом') colorClass = 'var(--accent-home)';
-                if(theme === 'Другое') colorClass = 'var(--accent-other)';
+                if (theme === 'Работа') colorClass = 'var(--accent-work)';
+                if (theme === 'Учеба') colorClass = 'var(--accent-study)';
+                if (theme === 'Дом') colorClass = 'var(--accent-home)';
+                if (theme === 'Другое') colorClass = 'var(--accent-other)';
 
                 const dayCard = document.createElement('div');
                 dayCard.className = 'day-card';
-                dayCard.onclick = () => {
+                dayCard.onclick = function() {
                     selectedDayIndex = index;
                     document.getElementById('modal-theme-title').innerText = `Тема на ${daysNames[index]}`;
                     openModal('modal-theme');
@@ -280,73 +439,102 @@
             } else {
                 scheduleData[selectedDayIndex] = themeName;
             }
-            localStorage.setItem('schedule', JSON.stringify(scheduleData));
+            setStorage('schedule', scheduleData);
             renderDays();
             updateClock();
             closeModal('modal-theme');
         }
 
-        // Сохранение целевой даты
         function saveTargetDate() {
             const title = document.getElementById('target-title').value;
             const date = document.getElementById('target-date').value;
-            if(title && date) {
+            if (title && date) {
                 targetEvent = { title, date };
-                localStorage.setItem('targetEvent', JSON.stringify(targetEvent));
+                setStorage('targetEvent', targetEvent);
                 updateClock();
                 closeModal('modal-countdown');
             }
         }
 
-        // Логика Важное
+        // Важное
         function renderImportant() {
             const list = document.getElementById('important-list');
+            if (!list) return;
             list.innerHTML = '';
             importantData.forEach((item, i) => {
-                list.innerHTML += `<div class="list-item"><span>📌 ${item}</span><span onclick="deleteImp(${i})" style="color:red; cursor:pointer;">✕</span></div>`;
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'list-item';
+                itemDiv.innerHTML = `<span>📌 ${item}</span>`;
+                
+                const delSpan = document.createElement('span');
+                delSpan.className = 'delete-btn';
+                delSpan.innerText = '✕';
+                delSpan.onclick = function() { deleteImp(i); };
+                
+                itemDiv.appendChild(delSpan);
+                list.appendChild(itemDiv);
             });
-            document.getElementById('important-count').innerText = `${importantData.length} дел`;
+            const countEl = document.getElementById('important-count');
+            if (countEl) countEl.innerText = `${importantData.length} дел`;
         }
+
         function addImportant() {
-            const val = document.getElementById('imp-text').value;
-            if(val) {
+            const input = document.getElementById('imp-text');
+            const val = input ? input.value.trim() : '';
+            if (val) {
                 importantData.push(val);
-                localStorage.setItem('important', JSON.stringify(importantData));
-                document.getElementById('imp-text').value = '';
+                setStorage('important', importantData);
+                input.value = '';
                 renderImportant();
             }
         }
+
         function deleteImp(i) {
             importantData.splice(i, 1);
-            localStorage.setItem('important', JSON.stringify(importantData));
+            setStorage('important', importantData);
             renderImportant();
         }
 
-        // Логика Заметок
+        // Заметки
         function renderNotes() {
             const list = document.getElementById('notes-list');
+            if (!list) return;
             list.innerHTML = '';
             notesData.forEach((item, i) => {
-                list.innerHTML += `<div class="list-item"><span>📝 ${item}</span><span onclick="deleteNote(${i})" style="color:red; cursor:pointer;">✕</span></div>`;
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'list-item';
+                itemDiv.innerHTML = `<span>📝 ${item}</span>`;
+                
+                const delSpan = document.createElement('span');
+                delSpan.className = 'delete-btn';
+                delSpan.innerText = '✕';
+                delSpan.onclick = function() { deleteNote(i); };
+                
+                itemDiv.appendChild(delSpan);
+                list.appendChild(itemDiv);
             });
-            document.getElementById('notes-count').innerText = `${notesData.length} записей`;
+            const countEl = document.getElementById('notes-count');
+            if (countEl) countEl.innerText = `${notesData.length} записей`;
         }
+
         function addNote() {
-            const val = document.getElementById('note-text').value;
-            if(val) {
+            const textarea = document.getElementById('note-text');
+            const val = textarea ? textarea.value.trim() : '';
+            if (val) {
                 notesData.push(val);
-                localStorage.setItem('notes', JSON.stringify(notesData));
-                document.getElementById('note-text').value = '';
+                setStorage('notes', notesData);
+                textarea.value = '';
                 renderNotes();
             }
         }
+
         function deleteNote(i) {
             notesData.splice(i, 1);
-            localStorage.setItem('notes', JSON.stringify(notesData));
+            setStorage('notes', notesData);
             renderNotes();
         }
 
-        // Инициализация
+        // Старт
         renderDays();
         renderImportant();
         renderNotes();
