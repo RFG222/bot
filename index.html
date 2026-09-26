@@ -1,545 +1,636 @@
 <!DOCTYPE html>
-<html lang="ru" data-theme="minimal">
+<html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>Dashboard</title>
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <style>
-    :root[data-theme="minimal"] {
-      --bg-main: #0f172a;
-      --card-bg: #1e293b;
-      --card-border: #334155;
-      --text-primary: #f8fafc;
-      --text-muted: #94a3b8;
-      --accent: #475569;
-      --accent-active: #64748b;
-      --success: #10b981;
-      --danger: #ef4444;
-      --input-bg: #0f172a;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Мой Дашборд</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        :root {
+            --bg-gradient: radial-gradient(circle at 50% 0%, #1c1d36 0%, #0b0c10 70%, #000000 100%);
+            --glass-bg: rgba(255, 255, 255, 0.08);
+            --glass-border: rgba(255, 255, 255, 0.15);
+            --glass-active: rgba(255, 255, 255, 0.16);
+            --text-main: #ffffff;
+            --text-sub: rgba(255, 255, 255, 0.55);
+            --accent-work: #ff9f0a;  /* Оранжевый - работа */
+            --accent-study: #bf5af2; /* Фиолетовый - учеба */
+            --accent-home: #30d158;  /* Зеленый - дом */
+            --accent-other: #64d2ff; /* Голубой - другое */
+        }
 
-    :root[data-theme="nordic-light"] {
-      --bg-main: #f8fafc;
-      --card-bg: #ffffff;
-      --card-border: #e2e8f0;
-      --text-primary: #0f172a;
-      --text-muted: #64748b;
-      --accent: #cbd5e1;
-      --accent-active: #94a3b8;
-      --success: #059669;
-      --danger: #dc2626;
-      --input-bg: #f1f5f9;
-    }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
-    :root[data-theme="calm-sage"] {
-      --bg-main: #18221c;
-      --card-bg: #222e26;
-      --card-border: #324338;
-      --text-primary: #f0fdf4;
-      --text-muted: #86efac;
-      --accent: #2e3e33;
-      --accent-active: #3e5244;
-      --success: #34d399;
-      --danger: #f87171;
-      --input-bg: #18221c;
-    }
+        body {
+            margin: 0; padding: 16px;
+            background: var(--bg-gradient);
+            background-attachment: fixed;
+            color: var(--text-main);
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, sans-serif;
+            user-select: none; -webkit-user-select: none;
+            min-height: 100vh;
+        }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      -webkit-tap-highlight-color: transparent;
-    }
+        .dashboard { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 
-    body {
-      background-color: var(--bg-main);
-      color: var(--text-primary);
-      padding: 16px;
-      transition: background-color 0.2s ease, color 0.2s ease;
-    }
+        /* Эффект матового стекла (iOS Glassmorphism) */
+        .widget {
+            background: var(--glass-bg);
+            backdrop-filter: blur(25px) saturate(190%);
+            -webkit-backdrop-filter: blur(25px) saturate(190%);
+            border: 1px solid var(--glass-border);
+            border-radius: 22px; padding: 16px;
+            display: flex; flex-direction: column; justify-content: space-between;
+            cursor: pointer;
+            transition: transform 0.15s cubic-bezier(0.2, 0.8, 0.2, 1), background-color 0.2s;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+        }
+        .widget:active { transform: scale(0.96); background-color: var(--glass-active); }
+        .widget-large { grid-column: span 2; }
 
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 16px;
-    }
+        .time { font-size: 48px; font-weight: 700; margin: 0; line-height: 1; letter-spacing: -1px; }
+        .date { color: var(--text-sub); font-size: 14px; margin-top: 6px; margin-bottom: 0; font-weight: 500; }
+        .countdown {
+            margin-top: 14px; font-size: 13px;
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 8px 14px; border-radius: 14px; font-weight: 600; display: inline-block;
+        }
 
-    .title {
-      font-size: 16px;
-      font-weight: 600;
-      letter-spacing: -0.3px;
-    }
+        .widget-title { font-size: 15px; font-weight: 600; display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 8px; }
+        .widget-value { font-size: 18px; font-weight: 700; margin-top: 4px; word-break: break-word; }
+        .widget-sub { font-size: 12px; color: var(--text-sub); margin-top: 4px; font-weight: 400; }
 
-    .theme-btn {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      color: var(--text-primary);
-      padding: 6px 12px;
-      border-radius: 8px;
-      font-size: 12px;
-      cursor: pointer;
-    }
+        /* Модальные окна в стиле iOS */
+        .modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            align-items: center; justify-content: center; z-index: 1000; padding: 16px;
+        }
+        .modal.active { display: flex; }
+        .modal-content {
+            background: rgba(30, 30, 45, 0.75);
+            backdrop-filter: blur(40px) saturate(200%);
+            -webkit-backdrop-filter: blur(40px) saturate(200%);
+            border-radius: 28px; padding: 22px;
+            width: 100%; max-width: 420px; max-height: 88vh; overflow-y: auto;
+            text-align: center; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
 
-    .theme-btn:active {
-      transform: scale(0.96);
-    }
+        /* Календарь на месяц */
+        .month-grid {
+            display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; width: 100%; margin: 12px 0;
+        }
+        .calendar-header { font-size: 11px; font-weight: 600; color: var(--text-sub); padding-bottom: 6px; }
+        .calendar-day {
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            text-align: center; padding: 6px 2px;
+            border-radius: 12px; font-size: 11px; font-weight: 600; display: flex; flex-direction: column;
+            justify-content: space-between; height: 48px; cursor: pointer; transition: background 0.15s;
+        }
+        .calendar-day:active { background: rgba(255, 255, 255, 0.2); }
+        .calendar-day.past {
+            opacity: 0.25; background: rgba(255, 255, 255, 0.02); cursor: not-allowed; pointer-events: none; border: none;
+        }
+        .calendar-day.today { border: 1.5px solid var(--accent-work); background: rgba(255, 159, 10, 0.18); }
+        .day-num { font-size: 12px; }
+        .day-tag {
+            font-size: 8px; padding: 2px 2px; border-radius: 4px; background: rgba(255, 255, 255, 0.1);
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 500;
+        }
 
-    .card {
-      background-color: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 12px;
-      padding: 14px;
-      margin-bottom: 14px;
-    }
+        /* Кнопки и формы */
+        .btn-option {
+            width: 100%; padding: 14px; margin: 6px 0; border: none; border-radius: 16px;
+            font-size: 15px; font-weight: 600; color: white; cursor: pointer; transition: opacity 0.15s, transform 0.1s;
+        }
+        .btn-option:active { opacity: 0.8; transform: scale(0.98); }
+        .btn-work { background: var(--accent-work); }
+        .btn-study { background: var(--accent-study); }
+        .btn-home { background: var(--accent-home); }
+        .btn-other { background: var(--accent-other); color: #000; }
+        .btn-danger { background: #ff453a; }
+        .btn-close { background: rgba(255, 255, 255, 0.12); color: var(--text-main); margin-top: 10px; border: 1px solid rgba(255,255,255,0.1); }
 
-    .card-title {
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 0.8px;
-      color: var(--text-muted);
-      margin-bottom: 10px;
-      font-weight: 600;
-    }
+        input, textarea {
+            width: 100%; padding: 12px 14px; margin: 8px 0; border-radius: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            background: rgba(0, 0, 0, 0.35);
+            backdrop-filter: blur(10px);
+            color: white; font-size: 14px; outline: none; font-family: inherit;
+        }
 
-    /* Часы и счетчик */
-    .clock-display {
-      font-size: 28px;
-      font-weight: 700;
-    }
+        /* Заметки */
+        .note-card {
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 12px; border-radius: 16px; margin: 8px 0;
+            text-align: left; cursor: pointer; transition: background 0.15s;
+        }
+        .note-card:active { background: rgba(255, 255, 255, 0.15); }
+        .note-card-title { font-weight: 600; font-size: 15px; margin-bottom: 4px; }
+        .note-card-preview { font-size: 12px; color: var(--text-sub); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        
+        /* Вложения заметок */
+        .attachments-preview { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0; }
+        .file-chip {
+            background: rgba(255, 255, 255, 0.12); padding: 6px 10px; border-radius: 10px;
+            font-size: 12px; display: flex; align-items: center; gap: 6px; border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .img-preview { max-width: 100%; max-height: 140px; border-radius: 12px; object-fit: cover; margin-top: 6px; }
 
-    .countdown-display {
-      font-size: 13px;
-      color: var(--text-muted);
-      margin-top: 4px;
-    }
-
-    /* Элементы ввода */
-    input[type="text"], textarea {
-      width: 100%;
-      background: var(--input-bg);
-      border: 1px solid var(--card-border);
-      color: var(--text-primary);
-      padding: 10px;
-      border-radius: 8px;
-      font-size: 14px;
-      outline: none;
-      margin-bottom: 8px;
-    }
-
-    input[type="file"] {
-      display: none;
-    }
-
-    .file-label {
-      display: inline-block;
-      background: var(--input-bg);
-      border: 1px dashed var(--card-border);
-      color: var(--text-muted);
-      padding: 8px 12px;
-      border-radius: 8px;
-      font-size: 12px;
-      cursor: pointer;
-      margin-bottom: 8px;
-      width: 100%;
-      text-align: center;
-    }
-
-    .btn-action {
-      width: 100%;
-      background: var(--accent);
-      border: none;
-      color: var(--text-primary);
-      padding: 10px;
-      border-radius: 8px;
-      font-size: 13px;
-      font-weight: 500;
-      cursor: pointer;
-    }
-
-    .btn-action:active {
-      transform: scale(0.98);
-      background: var(--accent-active);
-    }
-
-    /* Списки задач */
-    .task-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 8px 0;
-      border-bottom: 1px solid var(--card-border);
-    }
-
-    .task-item:last-child {
-      border-bottom: none;
-    }
-
-    .task-text {
-      font-size: 14px;
-      cursor: pointer;
-    }
-
-    .task-text.done {
-      text-decoration: line-through;
-      color: var(--text-muted);
-    }
-
-    .btn-delete {
-      background: transparent;
-      border: none;
-      color: var(--danger);
-      font-size: 12px;
-      cursor: pointer;
-      padding: 4px 6px;
-    }
-
-    /* Календарь */
-    .calendar-grid {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap: 4px;
-      text-align: center;
-    }
-
-    .cal-day-head {
-      font-size: 11px;
-      color: var(--text-muted);
-      padding-bottom: 4px;
-    }
-
-    .cal-day {
-      padding: 8px 0;
-      font-size: 12px;
-      border-radius: 6px;
-      background: var(--input-bg);
-      cursor: pointer;
-    }
-
-    .cal-day:active {
-      transform: scale(0.92);
-    }
-
-    .cal-day.today {
-      border: 1px solid var(--text-muted);
-      font-weight: 700;
-    }
-
-    /* Заметки и Вложения */
-    .note-item {
-      background: var(--input-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 8px;
-      padding: 10px;
-      margin-bottom: 8px;
-      cursor: pointer;
-    }
-
-    .note-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .note-title {
-      font-size: 14px;
-      font-weight: 600;
-    }
-
-    .note-body {
-      font-size: 13px;
-      color: var(--text-muted);
-      display: none;
-      margin-top: 8px;
-      white-space: pre-wrap;
-    }
-
-    .note-item.open .note-body {
-      display: block;
-    }
-
-    .attachment-preview {
-      margin-top: 8px;
-      max-width: 100%;
-      border-radius: 6px;
-      max-height: 200px;
-      object-fit: cover;
-    }
-
-    .file-link {
-      display: inline-block;
-      margin-top: 8px;
-      color: var(--text-primary);
-      font-size: 12px;
-      text-decoration: underline;
-    }
-  </style>
+        .list-item {
+            background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 12px; border-radius: 14px; margin: 8px 0;
+            text-align: left; font-size: 14px; display: flex; justify-content: space-between; align-items: center;
+        }
+        .delete-btn { color: #ff453a; font-weight: bold; font-size: 16px; padding: 4px 8px; cursor: pointer; }
+    </style>
 </head>
 <body>
 
-  <div class="header">
-    <div class="title">Панель управления</div>
-    <button class="theme-btn" onclick="toggleTheme()">Тема: Минимал</button>
-  </div>
+    <div class="dashboard">
+        <!-- 1. ГЛАВНЫЙ ВИДЖЕТ -->
+        <div class="widget widget-large" onclick="openModal('modal-countdown')">
+            <div style="text-align: center;">
+                <h1 class="time" id="clock">00:00</h1>
+                <p class="date" id="date-display">Загрузка...</p>
+                <div class="countdown" id="countdown-btn">🎯 Задать важную дату</div>
+            </div>
+        </div>
 
-  <!-- Часы и таймер -->
-  <div class="card">
-    <div class="card-title">Время</div>
-    <div class="clock-display" id="clock">00:00:00</div>
-    <div class="countdown-display" id="countdown">Загрузка...</div>
-  </div>
+        <!-- 2. ГРАФИК (Сегодня) -->
+        <div class="widget widget-large" onclick="openModal('modal-schedule')">
+            <div class="widget-title">График на сегодня <span>📅</span></div>
+            <div class="widget-value" id="today-focus-title">Сегодня: Загрузка...</div>
+            <div class="widget-sub">Нажми, чтобы открыть весь месяц ➔</div>
+        </div>
 
-  <!-- Список задач -->
-  <div class="card">
-    <div class="card-title">Задачи</div>
-    <div style="display: flex; gap: 8px;">
-      <input type="text" id="taskInput" placeholder="Новая задача..." onkeypress="if(event.key==='Enter') addTask()">
-      <button class="btn-action" style="width: auto; padding: 0 14px;" onclick="addTask()">Добавить</button>
+        <!-- 3. ВАЖНОЕ -->
+        <div class="widget" onclick="openModal('modal-important')">
+            <div class="widget-title">Важное 📌</div>
+            <div class="widget-value" id="important-count">0 дел</div>
+            <div class="widget-sub">События месяца</div>
+        </div>
+
+        <!-- 4. ЗАМЕТКИ -->
+        <div class="widget" onclick="openModal('modal-notes')">
+            <div class="widget-title">Заметки 📝</div>
+            <div class="widget-value" id="notes-count">0 записей</div>
+            <div class="widget-sub">Быстрый блокнот</div>
+        </div>
+
+        <!-- 5. БОТ (Копилка) -->
+        <div class="widget widget-large" onclick="openModal('modal-stash')">
+            <div class="widget-title">Копилка из чата 📥</div>
+            <div class="widget-sub">Все твои мысли и фото из чата сохранены в БД</div>
+        </div>
     </div>
-    <div id="taskList" style="margin-top: 8px;"></div>
-  </div>
 
-  <!-- Календарь -->
-  <div class="card">
-    <div class="card-title" id="calendarMonth">Календарь</div>
-    <div class="calendar-grid" id="calendarGrid"></div>
-  </div>
+    <!-- МОДАЛКА: ГРАФИК (Весь месяц) -->
+    <div class="modal" id="modal-schedule">
+        <div class="modal-content">
+            <h3 id="modal-schedule-title" style="margin-top: 0;">Месяц</h3>
+            <p style="font-size: 12px; color: var(--text-sub);">Прошедшие дни серые и заблокированы</p>
+            <div class="month-grid" id="days-container"></div>
+            <button class="btn-option btn-close" onclick="closeModal('modal-schedule')">Закрыть</button>
+        </div>
+    </div>
 
-  <!-- Заметки с поддержкой файлов -->
-  <div class="card">
-    <div class="card-title">Заметки</div>
-    <input type="text" id="noteTitle" placeholder="Заголовок">
-    <textarea id="noteContent" rows="3" placeholder="Текст заметки..."></textarea>
-    
-    <label class="file-label" id="fileLabel" for="noteFile">Прикрепить файл или фото</label>
-    <input type="file" id="noteFile" onchange="handleFileSelect(event)">
-    
-    <button class="btn-action" onclick="saveNote()">Сохранить заметку</button>
-    <div id="notesList" style="margin-top: 10px;"></div>
-  </div>
+    <!-- МОДАЛКА: ВЫБОР ТЕМЫ ДНЯ -->
+    <div class="modal" id="modal-theme">
+        <div class="modal-content">
+            <h3 id="modal-theme-title" style="margin-top: 0;">Тема дня</h3>
+            <button class="btn-option btn-work" onclick="selectTheme('Работа')">💼 Работа</button>
+            <button class="btn-option btn-study" onclick="selectTheme('Учеба')">🎓 Учеба</button>
+            <button class="btn-option btn-home" onclick="selectTheme('Дом')">🏠 Дом</button>
+            <button class="btn-option btn-other" onclick="selectTheme('Другое')">✨ Другое</button>
+            <button class="btn-option btn-close" onclick="closeModal('modal-theme')">Назад</button>
+        </div>
+    </div>
 
-  <script>
-    const tg = window.Telegram?.WebApp;
-    if (tg) tg.expand();
+    <!-- МОДАЛКА: ВАЖНАЯ ДАТА -->
+    <div class="modal" id="modal-countdown">
+        <div class="modal-content">
+            <h3 style="margin-top: 0;">Важная дата</h3>
+            <input type="text" id="target-title" placeholder="Название (например: Диплом)">
+            <input type="date" id="target-date">
+            <button class="btn-option btn-work" onclick="saveTargetDate()">Сохранить</button>
+            <button class="btn-option btn-close" onclick="closeModal('modal-countdown')">Отмена</button>
+        </div>
+    </div>
 
-    // Функция тактильного отклика (вибрации)
-    function haptic(type, style = 'light') {
-      if (!tg?.HapticFeedback) return;
-      if (type === 'impact') tg.HapticFeedback.impactOccurred(style);
-      if (type === 'notification') tg.HapticFeedback.notificationOccurred(style);
-      if (type === 'selection') tg.HapticFeedback.selectionChanged();
-    }
+    <!-- МОДАЛКА: ВАЖНОЕ -->
+    <div class="modal" id="modal-important">
+        <div class="modal-content">
+            <h3 style="margin-top: 0;">Важные события</h3>
+            <div id="important-list"></div>
+            <input type="text" id="imp-text" placeholder="Новое событие...">
+            <button class="btn-option btn-study" onclick="addImportant()">Добавить</button>
+            <button class="btn-option btn-close" onclick="closeModal('modal-important')">Закрыть</button>
+        </div>
+    </div>
 
-    // Переключение тем
-    const themes = [
-      { id: 'minimal', name: 'Тема: Минимал' },
-      { id: 'nordic-light', name: 'Тема: Светлая' },
-      { id: 'calm-sage', name: 'Тема: Шалфей' }
-    ];
-    let currentThemeIdx = 0;
+    <!-- МОДАЛКА: СПИСОК ЗАМЕТОК -->
+    <div class="modal" id="modal-notes">
+        <div class="modal-content">
+            <h3 style="margin-top: 0;">Мои Заметки</h3>
+            <button class="btn-option btn-home" onclick="openNoteEditor(null)">+ Создать заметку</button>
+            <div id="notes-list" style="margin-top: 10px;"></div>
+            <button class="btn-option btn-close" onclick="closeModal('modal-notes')">Закрыть</button>
+        </div>
+    </div>
 
-    function applyTheme(themeId) {
-      document.documentElement.setAttribute('data-theme', themeId);
-      localStorage.setItem('selected_theme', themeId);
-      const themeObj = themes.find(t => t.id === themeId);
-      if (themeObj) {
-        document.querySelector('.theme-btn').innerText = themeObj.name;
-      }
-    }
+    <!-- МОДАЛКА: РЕДАКТОР ЗАМЕТКИ -->
+    <div class="modal" id="modal-note-editor">
+        <div class="modal-content">
+            <h3 id="editor-heading" style="margin-top: 0;">Заметка</h3>
+            <input type="text" id="note-title-input" placeholder="Заголовок">
+            <textarea id="note-body-input" rows="6" placeholder="Текст заметки..."></textarea>
+            
+            <input type="file" id="note-file-input" style="display:none;" onchange="handleFileUpload(event)">
+            <button class="btn-option btn-other" onclick="document.getElementById('note-file-input').click()">📎 Прикрепить файл / фото</button>
+            
+            <div id="attachments-preview" class="attachments-preview"></div>
 
-    function toggleTheme() {
-      haptic('selection');
-      currentThemeIdx = (currentThemeIdx + 1) % themes.length;
-      applyTheme(themes[currentThemeIdx].id);
-    }
+            <button class="btn-option btn-work" onclick="saveCurrentNote()">Сохранить</button>
+            <button class="btn-option btn-danger" id="btn-delete-note" onclick="deleteCurrentNote()" style="display:none;">Удалить</button>
+            <button class="btn-option btn-close" onclick="closeModal('modal-note-editor')">Назад</button>
+        </div>
+    </div>
 
-    const savedTheme = localStorage.getItem('selected_theme');
-    if (savedTheme) {
-      currentThemeIdx = themes.findIndex(t => t.id === savedTheme);
-      if (currentThemeIdx === -1) currentThemeIdx = 0;
-      applyTheme(savedTheme);
-    }
+    <!-- МОДАЛКА: БОТ КОПИЛКА -->
+    <div class="modal" id="modal-stash">
+        <div class="modal-content">
+            <h3 style="margin-top: 0;">Копилка из бота</h3>
+            <p style="font-size: 13px; color: var(--text-sub); text-align: left; line-height: 1.4;">
+                Все входящие сообщения, мысли и фотографии, которые ты отправляешь боту в чате, автоматически записываются в базу данных SQLite (<code>dashboard.db</code>) на твоем сервере.
+            </p>
+            <button class="btn-option btn-close" onclick="closeModal('modal-stash')">Понятно</button>
+        </div>
+    </div>
 
-    // Время и таймер
-    function updateTime() {
-      const now = new Date();
-      document.getElementById('clock').innerText = now.toLocaleTimeString('ru-RU');
+    <script>
+        try {
+            if (window.Telegram && window.Telegram.WebApp) {
+                window.Telegram.WebApp.ready();
+                window.Telegram.WebApp.expand();
+            }
+        } catch (e) {}
 
-      const endOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59);
-      const diff = Math.floor((endOfDay - now) / 1000);
-      const hours = Math.floor(diff / 3600);
-      const mins = Math.floor((diff % 3600) / 60);
-      const secs = diff % 60;
-      document.getElementById('countdown').innerText = `До конца дня: ${hours}ч ${mins}м ${secs}с`;
-    }
-    setInterval(updateTime, 1000);
-    updateTime();
-
-    // Задачи
-    let tasks = JSON.parse(localStorage.getItem('dashboard_tasks') || '[]');
-
-    function renderTasks() {
-      const container = document.getElementById('taskList');
-      container.innerHTML = '';
-      tasks.forEach((t, i) => {
-        const item = document.createElement('div');
-        item.className = 'task-item';
-        item.innerHTML = `
-          <span class="task-text ${t.done ? 'done' : ''}" onclick="toggleTask(${i})">${t.text}</span>
-          <button class="btn-delete" onclick="deleteTask(${i})">Удалить</button>
-        `;
-        container.appendChild(item);
-      });
-    }
-
-    function addTask() {
-      const input = document.getElementById('taskInput');
-      if (!input.value.trim()) return;
-      tasks.push({ text: input.value.trim(), done: false });
-      localStorage.setItem('dashboard_tasks', JSON.stringify(tasks));
-      input.value = '';
-      renderTasks();
-      haptic('notification', 'success');
-    }
-
-    function toggleTask(index) {
-      tasks[index].done = !tasks[index].done;
-      localStorage.setItem('dashboard_tasks', JSON.stringify(tasks));
-      renderTasks();
-      haptic('impact', 'light');
-    }
-
-    function deleteTask(index) {
-      tasks.splice(index, 1);
-      localStorage.setItem('dashboard_tasks', JSON.stringify(tasks));
-      renderTasks();
-      haptic('notification', 'warning');
-    }
-    renderTasks();
-
-    // Календарь
-    function renderCalendar() {
-      const grid = document.getElementById('calendarGrid');
-      const monthTitle = document.getElementById('calendarMonth');
-      grid.innerHTML = '';
-
-      const now = new Date();
-      const monthNames = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"];
-      monthTitle.innerText = `${monthNames[now.getMonth()]} ${now.getFullYear()}`;
-
-      const daysHeader = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
-      daysHeader.forEach(d => {
-        const h = document.createElement('div');
-        h.className = 'cal-day-head';
-        h.innerText = d;
-        grid.appendChild(h);
-      });
-
-      const firstDay = new Date(now.getFullYear(), now.getMonth(), 1).getDay();
-      const totalDays = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
-      
-      let offset = firstDay === 0 ? 6 : firstDay - 1;
-      for (let i = 0; i < offset; i++) {
-        grid.appendChild(document.createElement('div'));
-      }
-
-      for (let day = 1; day <= totalDays; day++) {
-        const dEl = document.createElement('div');
-        dEl.className = 'cal-day' + (day === now.getDate() ? ' today' : '');
-        dEl.innerText = day;
-        dEl.onclick = () => haptic('impact', 'light');
-        grid.appendChild(dEl);
-      }
-    }
-    renderCalendar();
-
-    // Заметки и файлы
-    let notes = JSON.parse(localStorage.getItem('dashboard_notes') || '[]');
-    let currentAttachment = null;
-
-    function handleFileSelect(event) {
-      const file = event.target.files[0];
-      if (!file) return;
-
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        currentAttachment = {
-          name: file.name,
-          type: file.type,
-          data: e.target.result
-        };
-        document.getElementById('fileLabel').innerText = `Прикреплен: ${file.name}`;
-        haptic('impact', 'light');
-      };
-      reader.readAsDataURL(file);
-    }
-
-    function renderNotes() {
-      const container = document.getElementById('notesList');
-      container.innerHTML = '';
-      notes.forEach((n, i) => {
-        const item = document.createElement('div');
-        item.className = 'note-item';
-        item.onclick = (e) => {
-          if (e.target.tagName === 'BUTTON' || e.target.tagName === 'A') return;
-          item.classList.toggle('open');
-          haptic('impact', 'light');
-        };
-
-        let attachmentHtml = '';
-        if (n.attachment) {
-          if (n.attachment.type.startsWith('image/')) {
-            attachmentHtml = `<img src="${n.attachment.data}" class="attachment-preview" alt="Вложение">`;
-          } else {
-            attachmentHtml = `<br><a href="${n.attachment.data}" download="${n.attachment.name}" class="file-link">Скачать файл: ${n.attachment.name}</a>`;
-          }
+        // Функция легкой вибрации (Telegram Haptic + fallback на Vibration API)
+        function haptic(style = 'light') {
+            try {
+                if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.HapticFeedback) {
+                    window.Telegram.WebApp.HapticFeedback.impactOccurred(style);
+                } else if (navigator.vibrate) {
+                    navigator.vibrate(10);
+                }
+            } catch (e) {}
         }
 
-        item.innerHTML = `
-          <div class="note-header">
-            <div class="note-title">${n.title}</div>
-            <button class="btn-delete" onclick="deleteNote(${i})">Удалить</button>
-          </div>
-          <div class="note-body">
-            <div>${n.content}</div>
-            ${attachmentHtml}
-          </div>
-        `;
-        container.appendChild(item);
-      });
-    }
+        function getStorage(key, fallback) {
+            try {
+                const item = localStorage.getItem(key);
+                return item ? JSON.parse(item) : fallback;
+            } catch (e) { return fallback; }
+        }
 
-    function saveNote() {
-      const title = document.getElementById('noteTitle');
-      const content = document.getElementById('noteContent');
-      if (!title.value.trim() && !content.value.trim() && !currentAttachment) return;
+        function setStorage(key, value) {
+            try { localStorage.setItem(key, JSON.stringify(value)); } catch (e) {}
+        }
 
-      notes.unshift({
-        title: title.value.trim() || 'Без названия',
-        content: content.value.trim(),
-        attachment: currentAttachment
-      });
+        function openModal(id) {
+            haptic('light');
+            const el = document.getElementById(id);
+            if (el) el.classList.add('active');
+        }
 
-      localStorage.setItem('dashboard_notes', JSON.stringify(notes));
-      title.value = '';
-      content.value = '';
-      currentAttachment = null;
-      document.getElementById('noteFile').value = '';
-      document.getElementById('fileLabel').innerText = 'Прикрепить файл или фото';
-      
-      renderNotes();
-      haptic('notification', 'success');
-    }
+        function closeModal(id) {
+            haptic('light');
+            const el = document.getElementById(id);
+            if (el) el.classList.remove('active');
+        }
 
-    function deleteNote(index) {
-      notes.splice(index, 1);
-      localStorage.setItem('dashboard_notes', JSON.stringify(notes));
-      renderNotes();
-      haptic('notification', 'warning');
-    }
-    renderNotes();
-  </script>
+        const monthNames = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"];
+        const weekDaysMin = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
+        let selectedDayNumber = null;
+
+        function getMonthKey() {
+            const d = new Date();
+            return `schedule_${d.getFullYear()}_${d.getMonth() + 1}`;
+        }
+
+        let scheduleData = getStorage(getMonthKey(), {});
+        let importantData = getStorage('important', []);
+        let notesData = getStorage('notes_v2', []);
+        let targetEvent = getStorage('targetEvent', { title: 'Диплом', date: '' });
+        
+        let editingNoteId = null;
+        let currentAttachments = [];
+
+        // Часы и Главный экран
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('clock').innerText = now.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+            document.getElementById('date-display').innerText = now.toLocaleDateString('ru-RU', { weekday: 'long', day: 'numeric', month: 'long' });
+
+            const todayNum = now.getDate();
+            const todayTheme = scheduleData[todayNum] || 'Не задано';
+            const todayTitleEl = document.getElementById('today-focus-title');
+            
+            if (todayTitleEl) {
+                todayTitleEl.innerText = `${todayNum} ${monthNames[now.getMonth()].slice(0, 3)}: ${todayTheme}`;
+                let color = 'var(--text-sub)';
+                if (todayTheme === 'Работа') color = 'var(--accent-work)';
+                if (todayTheme === 'Учеба') color = 'var(--accent-study)';
+                if (todayTheme === 'Дом') color = 'var(--accent-home)';
+                if (todayTheme === 'Другое') color = 'var(--accent-other)';
+                todayTitleEl.style.color = color;
+            }
+
+            const countBtn = document.getElementById('countdown-btn');
+            if (countBtn) {
+                if (targetEvent && targetEvent.date) {
+                    const diff = Math.ceil((new Date(targetEvent.date) - now) / (1000 * 60 * 60 * 24));
+                    countBtn.innerText = `🎯 ${targetEvent.title}: ${diff > 0 ? diff + ' дн.' : 'Сегодня!'}`;
+                } else {
+                    countBtn.innerText = '🎯 Задать важную дату';
+                }
+            }
+        }
+
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // Календарь на Месяц
+        function renderMonthCalendar() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = now.getMonth();
+            const todayDate = now.getDate();
+
+            document.getElementById('modal-schedule-title').innerText = `${monthNames[month]} ${year}`;
+
+            const firstDay = new Date(year, month, 1);
+            let firstDayIndex = firstDay.getDay();
+            firstDayIndex = firstDayIndex === 0 ? 6 : firstDayIndex - 1;
+
+            const totalDays = new Date(year, month + 1, 0).getDate();
+            const container = document.getElementById('days-container');
+            container.innerHTML = '';
+
+            // Шапка дней недели
+            weekDaysMin.forEach(d => {
+                const h = document.createElement('div');
+                h.className = 'calendar-header';
+                h.innerText = d;
+                container.appendChild(h);
+            });
+
+            // Пустые ячейки смещения
+            for (let i = 0; i < firstDayIndex; i++) {
+                const empty = document.createElement('div');
+                empty.className = 'calendar-day past';
+                container.appendChild(empty);
+            }
+
+            // Дни месяца
+            for (let day = 1; day <= totalDays; day++) {
+                const theme = scheduleData[day] || 'Свободно';
+                const isPast = day < todayDate;
+                const isToday = day === todayDate;
+
+                let colorClass = 'var(--text-sub)';
+                if (theme === 'Работа') colorClass = 'var(--accent-work)';
+                if (theme === 'Учеба') colorClass = 'var(--accent-study)';
+                if (theme === 'Дом') colorClass = 'var(--accent-home)';
+                if (theme === 'Другое') colorClass = 'var(--accent-other)';
+
+                const dayCard = document.createElement('div');
+                dayCard.className = `calendar-day ${isPast ? 'past' : ''} ${isToday ? 'today' : ''}`;
+                
+                if (!isPast) {
+                    dayCard.onclick = function() {
+                        haptic('light');
+                        selectedDayNumber = day;
+                        document.getElementById('modal-theme-title').innerText = `Тема на ${day} ${monthNames[month].slice(0, 3).toLowerCase()}`;
+                        openModal('modal-theme');
+                    };
+                }
+
+                dayCard.innerHTML = `
+                    <div class="day-num">${day}</div>
+                    <div class="day-tag" style="color: ${colorClass}">${theme}</div>
+                `;
+                container.appendChild(dayCard);
+            }
+        }
+
+        function selectTheme(themeName) {
+            haptic('medium');
+            if (themeName === 'Другое') {
+                const custom = prompt("Введи свою тему дня:");
+                if (custom) scheduleData[selectedDayNumber] = custom;
+            } else {
+                scheduleData[selectedDayNumber] = themeName;
+            }
+            setStorage(getMonthKey(), scheduleData);
+            renderMonthCalendar();
+            updateClock();
+            closeModal('modal-theme');
+        }
+
+        function saveTargetDate() {
+            haptic('medium');
+            const title = document.getElementById('target-title').value;
+            const date = document.getElementById('target-date').value;
+            if (title && date) {
+                targetEvent = { title, date };
+                setStorage('targetEvent', targetEvent);
+                updateClock();
+                closeModal('modal-countdown');
+            }
+        }
+
+        // Важное
+        function renderImportant() {
+            const list = document.getElementById('important-list');
+            if (!list) return;
+            list.innerHTML = '';
+            importantData.forEach((item, i) => {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'list-item';
+                itemDiv.innerHTML = `<span>📌 ${item}</span>`;
+                
+                const delSpan = document.createElement('span');
+                delSpan.className = 'delete-btn';
+                delSpan.innerText = '✕';
+                delSpan.onclick = function() { deleteImp(i); };
+                
+                itemDiv.appendChild(delSpan);
+                list.appendChild(itemDiv);
+            });
+            const countEl = document.getElementById('important-count');
+            if (countEl) countEl.innerText = `${importantData.length} дел`;
+        }
+
+        function addImportant() {
+            haptic('light');
+            const input = document.getElementById('imp-text');
+            const val = input ? input.value.trim() : '';
+            if (val) {
+                importantData.push(val);
+                setStorage('important', importantData);
+                input.value = '';
+                renderImportant();
+            }
+        }
+
+        function deleteImp(i) {
+            haptic('light');
+            importantData.splice(i, 1);
+            setStorage('important', importantData);
+            renderImportant();
+        }
+
+        // Заметки
+        function renderNotesList() {
+            const list = document.getElementById('notes-list');
+            if (!list) return;
+            list.innerHTML = '';
+
+            notesData.forEach((note) => {
+                const card = document.createElement('div');
+                card.className = 'note-card';
+                card.onclick = function() { openNoteEditor(note.id); };
+                
+                const hasAttach = note.attachments && note.attachments.length > 0 ? ' 📎' : '';
+                card.innerHTML = `
+                    <div class="note-card-title">${note.title || 'Без названия'}${hasAttach}</div>
+                    <div class="note-card-preview">${note.body || 'Пустая заметка...'}</div>
+                `;
+                list.appendChild(card);
+            });
+
+            const countEl = document.getElementById('notes-count');
+            if (countEl) countEl.innerText = `${notesData.length} записей`;
+        }
+
+        function openNoteEditor(id) {
+            haptic('light');
+            editingNoteId = id;
+            currentAttachments = [];
+            
+            const titleInput = document.getElementById('note-title-input');
+            const bodyInput = document.getElementById('note-body-input');
+            const deleteBtn = document.getElementById('btn-delete-note');
+
+            if (id !== null) {
+                const note = notesData.find(n => n.id === id);
+                if (note) {
+                    titleInput.value = note.title || '';
+                    bodyInput.value = note.body || '';
+                    currentAttachments = note.attachments ? [...note.attachments] : [];
+                    deleteBtn.style.display = 'block';
+                }
+            } else {
+                titleInput.value = '';
+                bodyInput.value = '';
+                deleteBtn.style.display = 'none';
+            }
+
+            renderAttachments();
+            openModal('modal-note-editor');
+        }
+
+        function handleFileUpload(event) {
+            haptic('light');
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                currentAttachments.push({
+                    name: file.name,
+                    type: file.type,
+                    data: e.target.result
+                });
+                renderAttachments();
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function renderAttachments() {
+            const container = document.getElementById('attachments-preview');
+            container.innerHTML = '';
+            
+            currentAttachments.forEach((att) => {
+                if (att.type.startsWith('image/')) {
+                    const img = document.createElement('img');
+                    img.src = att.data;
+                    img.className = 'img-preview';
+                    container.appendChild(img);
+                } else {
+                    const chip = document.createElement('div');
+                    chip.className = 'file-chip';
+                    chip.innerText = `📄 ${att.name}`;
+                    container.appendChild(chip);
+                }
+            });
+        }
+
+        function saveCurrentNote() {
+            haptic('medium');
+            const title = document.getElementById('note-title-input').value.trim();
+            const body = document.getElementById('note-body-input').value.trim();
+
+            if (!title && !body) {
+                closeModal('modal-note-editor');
+                return;
+            }
+
+            if (editingNoteId !== null) {
+                const note = notesData.find(n => n.id === editingNoteId);
+                if (note) {
+                    note.title = title;
+                    note.body = body;
+                    note.attachments = currentAttachments;
+                }
+            } else {
+                notesData.unshift({
+                    id: Date.now(),
+                    title: title,
+                    body: body,
+                    attachments: currentAttachments
+                });
+            }
+
+            setStorage('notes_v2', notesData);
+            renderNotesList();
+            closeModal('modal-note-editor');
+        }
+
+        function deleteCurrentNote() {
+            haptic('medium');
+            if (editingNoteId !== null) {
+                notesData = notesData.filter(n => n.id !== editingNoteId);
+                setStorage('notes_v2', notesData);
+                renderNotesList();
+                closeModal('modal-note-editor');
+            }
+        }
+
+        // Старт
+        renderMonthCalendar();
+        renderImportant();
+        renderNotesList();
+    </script>
 </body>
 </html>
