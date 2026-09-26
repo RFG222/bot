@@ -6,7 +6,6 @@
   <title>Dashboard</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
-    /* CSS ТЕМЫ И ПЕРЕМЕННЫЕ */
     :root[data-theme="minimal"] {
       --bg-main: #0f172a;
       --card-bg: #1e293b;
@@ -26,8 +25,8 @@
       --card-border: #e2e8f0;
       --text-primary: #0f172a;
       --text-muted: #64748b;
-      --accent: #e2e8f0;
-      --accent-active: #cbd5e1;
+      --accent: #cbd5e1;
+      --accent-active: #94a3b8;
       --success: #059669;
       --danger: #dc2626;
       --input-bg: #f1f5f9;
@@ -58,18 +57,18 @@
       background-color: var(--bg-main);
       color: var(--text-primary);
       padding: 16px;
-      transition: background-color 0.25s ease, color 0.25s ease;
+      transition: background-color 0.2s ease, color 0.2s ease;
     }
 
     .header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 20px;
+      margin-bottom: 16px;
     }
 
     .title {
-      font-size: 18px;
+      font-size: 16px;
       font-weight: 600;
       letter-spacing: -0.3px;
     }
@@ -82,7 +81,6 @@
       border-radius: 8px;
       font-size: 12px;
       cursor: pointer;
-      transition: transform 0.1s ease, background-color 0.2s ease;
     }
 
     .theme-btn:active {
@@ -92,76 +90,86 @@
     .card {
       background-color: var(--card-bg);
       border: 1px solid var(--card-border);
-      border-radius: 14px;
-      padding: 16px;
-      margin-bottom: 16px;
-      transition: all 0.2s ease;
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 14px;
     }
 
     .card-title {
-      font-size: 13px;
+      font-size: 12px;
       text-transform: uppercase;
       letter-spacing: 0.8px;
       color: var(--text-muted);
-      margin-bottom: 12px;
-      font-weight: 500;
+      margin-bottom: 10px;
+      font-weight: 600;
     }
 
-    /* Таймер и часы */
+    /* Часы и счетчик */
     .clock-display {
-      font-size: 32px;
+      font-size: 28px;
       font-weight: 700;
-      letter-spacing: -1px;
     }
 
     .countdown-display {
-      font-size: 14px;
+      font-size: 13px;
       color: var(--text-muted);
       margin-top: 4px;
     }
 
-    /* Формы и инпуты */
-    input, textarea {
+    /* Элементы ввода */
+    input[type="text"], textarea {
       width: 100%;
       background: var(--input-bg);
       border: 1px solid var(--card-border);
       color: var(--text-primary);
-      padding: 10px 12px;
+      padding: 10px;
       border-radius: 8px;
       font-size: 14px;
       outline: none;
       margin-bottom: 8px;
-      transition: border-color 0.2s ease;
     }
 
-    input:focus, textarea:focus {
-      border-color: var(--text-muted);
+    input[type="file"] {
+      display: none;
     }
 
-    button.btn-action {
+    .file-label {
+      display: inline-block;
+      background: var(--input-bg);
+      border: 1px dashed var(--card-border);
+      color: var(--text-muted);
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      cursor: pointer;
+      margin-bottom: 8px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .btn-action {
       width: 100%;
       background: var(--accent);
       border: none;
       color: var(--text-primary);
       padding: 10px;
       border-radius: 8px;
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 500;
       cursor: pointer;
-      transition: transform 0.1s ease, background 0.2s ease;
     }
 
-    button.btn-action:active {
+    .btn-action:active {
       transform: scale(0.98);
       background: var(--accent-active);
     }
 
-    /* Список задач */
+    /* Списки задач */
     .task-item {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 10px 0;
+      padding: 8px 0;
       border-bottom: 1px solid var(--card-border);
     }
 
@@ -171,6 +179,7 @@
 
     .task-text {
       font-size: 14px;
+      cursor: pointer;
     }
 
     .task-text.done {
@@ -182,18 +191,17 @@
       background: transparent;
       border: none;
       color: var(--danger);
-      font-size: 13px;
+      font-size: 12px;
       cursor: pointer;
-      padding: 4px 8px;
+      padding: 4px 6px;
     }
 
     /* Календарь */
     .calendar-grid {
       display: grid;
       grid-template-columns: repeat(7, 1fr);
-      gap: 6px;
+      gap: 4px;
       text-align: center;
-      margin-top: 10px;
     }
 
     .cal-day-head {
@@ -204,11 +212,10 @@
 
     .cal-day {
       padding: 8px 0;
-      font-size: 13px;
+      font-size: 12px;
       border-radius: 6px;
-      cursor: pointer;
       background: var(--input-bg);
-      transition: transform 0.1s ease;
+      cursor: pointer;
     }
 
     .cal-day:active {
@@ -217,34 +224,56 @@
 
     .cal-day.today {
       border: 1px solid var(--text-muted);
-      font-weight: 600;
+      font-weight: 700;
     }
 
-    /* Заметки */
+    /* Заметки и Вложения */
     .note-item {
       background: var(--input-bg);
+      border: 1px solid var(--card-border);
       border-radius: 8px;
-      padding: 12px;
+      padding: 10px;
       margin-bottom: 8px;
       cursor: pointer;
+    }
+
+    .note-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
 
     .note-title {
       font-size: 14px;
       font-weight: 600;
-      margin-bottom: 4px;
     }
 
     .note-body {
       font-size: 13px;
       color: var(--text-muted);
       display: none;
-      margin-top: 6px;
+      margin-top: 8px;
       white-space: pre-wrap;
     }
 
     .note-item.open .note-body {
       display: block;
+    }
+
+    .attachment-preview {
+      margin-top: 8px;
+      max-width: 100%;
+      border-radius: 6px;
+      max-height: 200px;
+      object-fit: cover;
+    }
+
+    .file-link {
+      display: inline-block;
+      margin-top: 8px;
+      color: var(--text-primary);
+      font-size: 12px;
+      text-decoration: underline;
     }
   </style>
 </head>
@@ -255,21 +284,21 @@
     <button class="theme-btn" onclick="toggleTheme()">Тема: Минимал</button>
   </div>
 
-  <!-- Часы и обратный отсчет -->
+  <!-- Часы и таймер -->
   <div class="card">
-    <div class="card-title">Текущее время</div>
+    <div class="card-title">Время</div>
     <div class="clock-display" id="clock">00:00:00</div>
     <div class="countdown-display" id="countdown">Загрузка...</div>
   </div>
 
-  <!-- Список важных дел -->
+  <!-- Список задач -->
   <div class="card">
     <div class="card-title">Задачи</div>
     <div style="display: flex; gap: 8px;">
       <input type="text" id="taskInput" placeholder="Новая задача..." onkeypress="if(event.key==='Enter') addTask()">
-      <button class="btn-action" style="width: auto; padding: 0 16px;" onclick="addTask()">Добавить</button>
+      <button class="btn-action" style="width: auto; padding: 0 14px;" onclick="addTask()">Добавить</button>
     </div>
-    <div id="taskList" style="margin-top: 10px;"></div>
+    <div id="taskList" style="margin-top: 8px;"></div>
   </div>
 
   <!-- Календарь -->
@@ -278,21 +307,24 @@
     <div class="calendar-grid" id="calendarGrid"></div>
   </div>
 
-  <!-- Редактор заметок -->
+  <!-- Заметки с поддержкой файлов -->
   <div class="card">
     <div class="card-title">Заметки</div>
     <input type="text" id="noteTitle" placeholder="Заголовок">
     <textarea id="noteContent" rows="3" placeholder="Текст заметки..."></textarea>
+    
+    <label class="file-label" id="fileLabel" for="noteFile">Прикрепить файл или фото</label>
+    <input type="file" id="noteFile" onchange="handleFileSelect(event)">
+    
     <button class="btn-action" onclick="saveNote()">Сохранить заметку</button>
-    <div id="notesList" style="margin-top: 12px;"></div>
+    <div id="notesList" style="margin-top: 10px;"></div>
   </div>
 
   <script>
-    // Инициализация Telegram WebApp API
     const tg = window.Telegram?.WebApp;
     if (tg) tg.expand();
 
-    // Вспомогательная функция вибраций (Haptic Feedback)
+    // Функция тактильного отклика (вибрации)
     function haptic(type, style = 'light') {
       if (!tg?.HapticFeedback) return;
       if (type === 'impact') tg.HapticFeedback.impactOccurred(style);
@@ -300,7 +332,7 @@
       if (type === 'selection') tg.HapticFeedback.selectionChanged();
     }
 
-    // ТЕМЫ ОФОРМЛЕНИЯ
+    // Переключение тем
     const themes = [
       { id: 'minimal', name: 'Тема: Минимал' },
       { id: 'nordic-light', name: 'Тема: Светлая' },
@@ -323,7 +355,6 @@
       applyTheme(themes[currentThemeIdx].id);
     }
 
-    // Загрузка сохраненной темы
     const savedTheme = localStorage.getItem('selected_theme');
     if (savedTheme) {
       currentThemeIdx = themes.findIndex(t => t.id === savedTheme);
@@ -331,12 +362,11 @@
       applyTheme(savedTheme);
     }
 
-    // ЧАСЫ И ТАЙМЕР
+    // Время и таймер
     function updateTime() {
       const now = new Date();
       document.getElementById('clock').innerText = now.toLocaleTimeString('ru-RU');
 
-      // Пример обратного отсчета (до конца текущего дня)
       const endOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59);
       const diff = Math.floor((endOfDay - now) / 1000);
       const hours = Math.floor(diff / 3600);
@@ -347,7 +377,7 @@
     setInterval(updateTime, 1000);
     updateTime();
 
-    // ЗАДАЧИ
+    // Задачи
     let tasks = JSON.parse(localStorage.getItem('dashboard_tasks') || '[]');
 
     function renderTasks() {
@@ -371,7 +401,7 @@
       localStorage.setItem('dashboard_tasks', JSON.stringify(tasks));
       input.value = '';
       renderTasks();
-      haptic('notification', 'success'); // Вибрация при сохранении
+      haptic('notification', 'success');
     }
 
     function toggleTask(index) {
@@ -385,11 +415,11 @@
       tasks.splice(index, 1);
       localStorage.setItem('dashboard_tasks', JSON.stringify(tasks));
       renderTasks();
-      haptic('notification', 'warning'); // Вибрация при удалении
+      haptic('notification', 'warning');
     }
     renderTasks();
 
-    // КАЛЕНДАРЬ
+    // Календарь
     function renderCalendar() {
       const grid = document.getElementById('calendarGrid');
       const monthTitle = document.getElementById('calendarMonth');
@@ -425,8 +455,26 @@
     }
     renderCalendar();
 
-    // ЗАМЕТКИ
+    // Заметки и файлы
     let notes = JSON.parse(localStorage.getItem('dashboard_notes') || '[]');
+    let currentAttachment = null;
+
+    function handleFileSelect(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        currentAttachment = {
+          name: file.name,
+          type: file.type,
+          data: e.target.result
+        };
+        document.getElementById('fileLabel').innerText = `Прикреплен: ${file.name}`;
+        haptic('impact', 'light');
+      };
+      reader.readAsDataURL(file);
+    }
 
     function renderNotes() {
       const container = document.getElementById('notesList');
@@ -435,16 +483,29 @@
         const item = document.createElement('div');
         item.className = 'note-item';
         item.onclick = (e) => {
-          if (e.target.tagName === 'BUTTON') return;
+          if (e.target.tagName === 'BUTTON' || e.target.tagName === 'A') return;
           item.classList.toggle('open');
-          haptic('impact', 'light'); // Вибрация при открытии блока
+          haptic('impact', 'light');
         };
+
+        let attachmentHtml = '';
+        if (n.attachment) {
+          if (n.attachment.type.startsWith('image/')) {
+            attachmentHtml = `<img src="${n.attachment.data}" class="attachment-preview" alt="Вложение">`;
+          } else {
+            attachmentHtml = `<br><a href="${n.attachment.data}" download="${n.attachment.name}" class="file-link">Скачать файл: ${n.attachment.name}</a>`;
+          }
+        }
+
         item.innerHTML = `
-          <div style="display:flex; justify-between; align-items:center;">
+          <div class="note-header">
             <div class="note-title">${n.title}</div>
             <button class="btn-delete" onclick="deleteNote(${i})">Удалить</button>
           </div>
-          <div class="note-body">${n.content}</div>
+          <div class="note-body">
+            <div>${n.content}</div>
+            ${attachmentHtml}
+          </div>
         `;
         container.appendChild(item);
       });
@@ -453,21 +514,30 @@
     function saveNote() {
       const title = document.getElementById('noteTitle');
       const content = document.getElementById('noteContent');
-      if (!title.value.trim() && !content.value.trim()) return;
+      if (!title.value.trim() && !content.value.trim() && !currentAttachment) return;
 
-      notes.unshift({ title: title.value.trim() || 'Без названия', content: content.value.trim() });
+      notes.unshift({
+        title: title.value.trim() || 'Без названия',
+        content: content.value.trim(),
+        attachment: currentAttachment
+      });
+
       localStorage.setItem('dashboard_notes', JSON.stringify(notes));
       title.value = '';
       content.value = '';
+      currentAttachment = null;
+      document.getElementById('noteFile').value = '';
+      document.getElementById('fileLabel').innerText = 'Прикрепить файл или фото';
+      
       renderNotes();
-      haptic('notification', 'success'); // Вибрация при сохранении
+      haptic('notification', 'success');
     }
 
     function deleteNote(index) {
       notes.splice(index, 1);
       localStorage.setItem('dashboard_notes', JSON.stringify(notes));
       renderNotes();
-      haptic('notification', 'warning'); // Вибрация при удалении
+      haptic('notification', 'warning');
     }
     renderNotes();
   </script>
