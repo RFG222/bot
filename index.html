@@ -13,10 +13,17 @@
             --glass-active: rgba(255, 255, 255, 0.16);
             --text-main: #ffffff;
             --text-sub: rgba(255, 255, 255, 0.55);
-            --accent-work: #ff9f0a;  /* Оранжевый - работа */
-            --accent-study: #bf5af2; /* Фиолетовый - учеба */
-            --accent-home: #30d158;  /* Зеленый - дом */
-            --accent-other: #64d2ff; /* Голубой - другое */
+            
+            /* Цветовая палитра iOS */
+            --color-orange: #ff9f0a;
+            --color-purple: #bf5af2;
+            --color-green: #30d158;
+            --color-red: #ff453a;
+            --color-yellow: #ffd60a;
+            --color-cyan: #64d2ff;
+            --color-blue: #0a84ff;
+            --color-pink: #ff375f;
+            --color-gray: #8e8e93;
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -33,7 +40,7 @@
 
         .dashboard { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 
-        /* Эффект матового стекла (iOS Glassmorphism) */
+        /* Матовое стекло */
         .widget {
             background: var(--glass-bg);
             backdrop-filter: blur(25px) saturate(190%);
@@ -47,6 +54,16 @@
         }
         .widget:active { transform: scale(0.96); background-color: var(--glass-active); }
         .widget-large { grid-column: span 2; }
+
+        /* Некликабельный виджет */
+        .widget-static {
+            cursor: default !important;
+            pointer-events: none;
+        }
+        .widget-static:active {
+            transform: none !important;
+            background-color: var(--glass-bg) !important;
+        }
 
         .time { font-size: 48px; font-weight: 700; margin: 0; line-height: 1; letter-spacing: -1px; }
         .date { color: var(--text-sub); font-size: 14px; margin-top: 6px; margin-bottom: 0; font-weight: 500; }
@@ -63,7 +80,7 @@
         .widget-value { font-size: 18px; font-weight: 700; margin-top: 4px; word-break: break-word; }
         .widget-sub { font-size: 12px; color: var(--text-sub); margin-top: 4px; font-weight: 400; }
 
-        /* Модальные окна в стиле iOS */
+        /* Модальные окна */
         .modal {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.6);
@@ -73,7 +90,7 @@
         }
         .modal.active { display: flex; }
         .modal-content {
-            background: rgba(30, 30, 45, 0.75);
+            background: rgba(30, 30, 45, 0.8);
             backdrop-filter: blur(40px) saturate(200%);
             -webkit-backdrop-filter: blur(40px) saturate(200%);
             border-radius: 28px; padding: 22px;
@@ -82,10 +99,8 @@
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
-        /* Календарь на месяц */
-        .month-grid {
-            display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; width: 100%; margin: 12px 0;
-        }
+        /* Календарь */
+        .month-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; width: 100%; margin: 12px 0; }
         .calendar-header { font-size: 11px; font-weight: 600; color: var(--text-sub); padding-bottom: 6px; }
         .calendar-day {
             background: rgba(255, 255, 255, 0.07);
@@ -95,15 +110,33 @@
             justify-content: space-between; height: 48px; cursor: pointer; transition: background 0.15s;
         }
         .calendar-day:active { background: rgba(255, 255, 255, 0.2); }
-        .calendar-day.past {
-            opacity: 0.25; background: rgba(255, 255, 255, 0.02); cursor: not-allowed; pointer-events: none; border: none;
-        }
-        .calendar-day.today { border: 1.5px solid var(--accent-work); background: rgba(255, 159, 10, 0.18); }
+        .calendar-day.past { opacity: 0.25; background: rgba(255, 255, 255, 0.02); cursor: not-allowed; pointer-events: none; border: none; }
+        .calendar-day.today { border: 1.5px solid var(--color-orange); background: rgba(255, 159, 10, 0.18); }
         .day-num { font-size: 12px; }
         .day-tag {
-            font-size: 8px; padding: 2px 2px; border-radius: 4px; background: rgba(255, 255, 255, 0.1);
-            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 500;
+            font-size: 8px; padding: 2px 2px; border-radius: 4px; background: rgba(255, 255, 255, 0.12);
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 600;
         }
+
+        /* Палитра цветов */
+        .color-palette {
+            display: flex; justify-content: center; gap: 8px; margin: 12px 0; flex-wrap: wrap;
+        }
+        .color-dot {
+            width: 30px; height: 30px; border-radius: 50%; cursor: pointer;
+            border: 2px solid transparent; transition: transform 0.15s, border-color 0.15s;
+        }
+        .color-dot:active { transform: scale(0.9); }
+        .color-dot.selected { border-color: #ffffff; transform: scale(1.18); box-shadow: 0 0 12px rgba(255, 255, 255, 0.4); }
+
+        /* Быстрые пресеты */
+        .preset-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 12px; }
+        .btn-preset {
+            padding: 10px; border: none; border-radius: 12px; font-size: 13px; font-weight: 600;
+            color: white; cursor: pointer; background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1); transition: background 0.15s;
+        }
+        .btn-preset:active { background: rgba(255, 255, 255, 0.25); }
 
         /* Кнопки и формы */
         .btn-option {
@@ -111,33 +144,25 @@
             font-size: 15px; font-weight: 600; color: white; cursor: pointer; transition: opacity 0.15s, transform 0.1s;
         }
         .btn-option:active { opacity: 0.8; transform: scale(0.98); }
-        .btn-work { background: var(--accent-work); }
-        .btn-study { background: var(--accent-study); }
-        .btn-home { background: var(--accent-home); }
-        .btn-other { background: var(--accent-other); color: #000; }
-        .btn-danger { background: #ff453a; }
-        .btn-close { background: rgba(255, 255, 255, 0.12); color: var(--text-main); margin-top: 10px; border: 1px solid rgba(255,255,255,0.1); }
+        .btn-primary { background: var(--color-orange); }
+        .btn-danger { background: var(--color-red); }
+        .btn-close { background: rgba(255, 255, 255, 0.12); color: var(--text-main); margin-top: 8px; border: 1px solid rgba(255,255,255,0.1); }
 
         input, textarea {
             width: 100%; padding: 12px 14px; margin: 8px 0; border-radius: 14px;
-            border: 1px solid rgba(255, 255, 255, 0.18);
-            background: rgba(0, 0, 0, 0.35);
-            backdrop-filter: blur(10px);
-            color: white; font-size: 14px; outline: none; font-family: inherit;
+            border: 1px solid rgba(255, 255, 255, 0.18); background: rgba(0, 0, 0, 0.35);
+            backdrop-filter: blur(10px); color: white; font-size: 14px; outline: none; font-family: inherit;
         }
 
         /* Заметки */
         .note-card {
-            background: rgba(255, 255, 255, 0.07);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 12px; border-radius: 16px; margin: 8px 0;
-            text-align: left; cursor: pointer; transition: background 0.15s;
+            background: rgba(255, 255, 255, 0.07); border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 12px; border-radius: 16px; margin: 8px 0; text-align: left; cursor: pointer; transition: background 0.15s;
         }
         .note-card:active { background: rgba(255, 255, 255, 0.15); }
         .note-card-title { font-weight: 600; font-size: 15px; margin-bottom: 4px; }
         .note-card-preview { font-size: 12px; color: var(--text-sub); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         
-        /* Вложения заметок */
         .attachments-preview { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0; }
         .file-chip {
             background: rgba(255, 255, 255, 0.12); padding: 6px 10px; border-radius: 10px;
@@ -150,7 +175,15 @@
             padding: 12px; border-radius: 14px; margin: 8px 0;
             text-align: left; font-size: 14px; display: flex; justify-content: space-between; align-items: center;
         }
-        .delete-btn { color: #ff453a; font-weight: bold; font-size: 16px; padding: 4px 8px; cursor: pointer; }
+        .delete-btn { color: var(--color-red); font-weight: bold; font-size: 16px; padding: 4px 8px; cursor: pointer; }
+
+        /* Статистика дня внизу */
+        .stat-badge {
+            display: inline-flex; align-items: center; gap: 6px;
+            background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.12);
+            padding: 6px 12px; border-radius: 12px; font-size: 13px; margin: 4px 3px; font-weight: 500;
+        }
+        .stat-dot { width: 8px; height: 8px; border-radius: 50%; }
     </style>
 </head>
 <body>
@@ -191,26 +224,50 @@
             <div class="widget-title">Копилка из чата 📥</div>
             <div class="widget-sub">Все твои мысли и фото из чата сохранены в БД</div>
         </div>
+
+        <!-- 6. НЕКЛИКАБЕЛЬНЫЙ ВИДЖЕТ СТАТИСТИКИ ЗА ПРОШЛЫЙ МЕСЯЦ -->
+        <div class="widget widget-large widget-static">
+            <div class="widget-title">
+                <span>Итоги за прошлый месяц 📊</span>
+            </div>
+            <div id="past-month-stats-container" style="margin-top: 6px; text-align: left;">
+                <!-- Подставляется динамически -->
+            </div>
+            <div class="widget-sub" style="margin-top: 10px;">Обновляется каждого 1-го числа месяца</div>
+        </div>
     </div>
 
     <!-- МОДАЛКА: ГРАФИК (Весь месяц) -->
     <div class="modal" id="modal-schedule">
         <div class="modal-content">
             <h3 id="modal-schedule-title" style="margin-top: 0;">Месяц</h3>
-            <p style="font-size: 12px; color: var(--text-sub);">Прошедшие дни серые и заблокированы</p>
+            <p style="font-size: 12px; color: var(--text-sub);">Прошедшие дни заблокированы</p>
             <div class="month-grid" id="days-container"></div>
             <button class="btn-option btn-close" onclick="closeModal('modal-schedule')">Закрыть</button>
         </div>
     </div>
 
-    <!-- МОДАЛКА: ВЫБОР ТЕМЫ ДНЯ -->
+    <!-- МОДАЛКА: ВЫБОР ТЕМЫ И ЦВЕТА ДНЯ -->
     <div class="modal" id="modal-theme">
         <div class="modal-content">
-            <h3 id="modal-theme-title" style="margin-top: 0;">Тема дня</h3>
-            <button class="btn-option btn-work" onclick="selectTheme('Работа')">💼 Работа</button>
-            <button class="btn-option btn-study" onclick="selectTheme('Учеба')">🎓 Учеба</button>
-            <button class="btn-option btn-home" onclick="selectTheme('Дом')">🏠 Дом</button>
-            <button class="btn-option btn-other" onclick="selectTheme('Другое')">✨ Другое</button>
+            <h3 id="modal-theme-title" style="margin-top: 0;">Настройка дня</h3>
+            
+            <p style="font-size: 12px; color: var(--text-sub); margin-bottom: 8px;">Быстрый выбор:</p>
+            <div class="preset-grid">
+                <button class="btn-preset" onclick="applyPreset('💼 Работа', 'var(--color-orange)')">💼 Работа</button>
+                <button class="btn-preset" onclick="applyPreset('🎓 Учеба', 'var(--color-purple)')">🎓 Учеба</button>
+                <button class="btn-preset" onclick="applyPreset('🏠 Дом', 'var(--color-green)')">🏠 Дом</button>
+                <button class="btn-preset" onclick="applyPreset('⚽ Спорт', 'var(--color-red)')">⚽ Спорт</button>
+                <button class="btn-preset" onclick="applyPreset('🌴 Отдых', 'var(--color-yellow)')">🌴 Отдых</button>
+                <button class="btn-preset" onclick="applyPreset('✨ Выходной', 'var(--color-cyan)')">✨ Выходной</button>
+            </div>
+
+            <p style="font-size: 12px; color: var(--text-sub); margin-bottom: 4px;">Или свой вариант и цвет:</p>
+            <input type="text" id="custom-theme-input" placeholder="Название темы...">
+            
+            <div class="color-palette" id="color-palette"></div>
+
+            <button class="btn-option btn-primary" onclick="saveCustomTheme()">Сохранить</button>
             <button class="btn-option btn-close" onclick="closeModal('modal-theme')">Назад</button>
         </div>
     </div>
@@ -221,7 +278,7 @@
             <h3 style="margin-top: 0;">Важная дата</h3>
             <input type="text" id="target-title" placeholder="Название (например: Диплом)">
             <input type="date" id="target-date">
-            <button class="btn-option btn-work" onclick="saveTargetDate()">Сохранить</button>
+            <button class="btn-option btn-primary" onclick="saveTargetDate()">Сохранить</button>
             <button class="btn-option btn-close" onclick="closeModal('modal-countdown')">Отмена</button>
         </div>
     </div>
@@ -232,7 +289,7 @@
             <h3 style="margin-top: 0;">Важные события</h3>
             <div id="important-list"></div>
             <input type="text" id="imp-text" placeholder="Новое событие...">
-            <button class="btn-option btn-study" onclick="addImportant()">Добавить</button>
+            <button class="btn-option btn-primary" onclick="addImportant()">Добавить</button>
             <button class="btn-option btn-close" onclick="closeModal('modal-important')">Закрыть</button>
         </div>
     </div>
@@ -241,7 +298,7 @@
     <div class="modal" id="modal-notes">
         <div class="modal-content">
             <h3 style="margin-top: 0;">Мои Заметки</h3>
-            <button class="btn-option btn-home" onclick="openNoteEditor(null)">+ Создать заметку</button>
+            <button class="btn-option btn-primary" onclick="openNoteEditor(null)">+ Создать заметку</button>
             <div id="notes-list" style="margin-top: 10px;"></div>
             <button class="btn-option btn-close" onclick="closeModal('modal-notes')">Закрыть</button>
         </div>
@@ -255,11 +312,11 @@
             <textarea id="note-body-input" rows="6" placeholder="Текст заметки..."></textarea>
             
             <input type="file" id="note-file-input" style="display:none;" onchange="handleFileUpload(event)">
-            <button class="btn-option btn-other" onclick="document.getElementById('note-file-input').click()">📎 Прикрепить файл / фото</button>
+            <button class="btn-option btn-close" style="background: rgba(255,255,255,0.08);" onclick="document.getElementById('note-file-input').click()">📎 Прикрепить файл / фото</button>
             
             <div id="attachments-preview" class="attachments-preview"></div>
 
-            <button class="btn-option btn-work" onclick="saveCurrentNote()">Сохранить</button>
+            <button class="btn-option btn-primary" onclick="saveCurrentNote()">Сохранить</button>
             <button class="btn-option btn-danger" id="btn-delete-note" onclick="deleteCurrentNote()" style="display:none;">Удалить</button>
             <button class="btn-option btn-close" onclick="closeModal('modal-note-editor')">Назад</button>
         </div>
@@ -284,7 +341,6 @@
             }
         } catch (e) {}
 
-        // Функция легкой вибрации (Telegram Haptic + fallback на Vibration API)
         function haptic(style = 'light') {
             try {
                 if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.HapticFeedback) {
@@ -319,15 +375,30 @@
         }
 
         const monthNames = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"];
+        const monthNamesGenitive = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"];
         const weekDaysMin = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
-        let selectedDayNumber = null;
+        
+        const availableColors = [
+            { name: 'Оранжевый', value: 'var(--color-orange)' },
+            { name: 'Фиолетовый', value: 'var(--color-purple)' },
+            { name: 'Зеленый', value: 'var(--color-green)' },
+            { name: 'Красный', value: 'var(--color-red)' },
+            { name: 'Желтый', value: 'var(--color-yellow)' },
+            { name: 'Голубой', value: 'var(--color-cyan)' },
+            { name: 'Синий', value: 'var(--color-blue)' },
+            { name: 'Розовый', value: 'var(--color-pink)' },
+            { name: 'Серый', value: 'var(--color-gray)' }
+        ];
 
-        function getMonthKey() {
-            const d = new Date();
-            return `schedule_${d.getFullYear()}_${d.getMonth() + 1}`;
+        let selectedDayNumber = null;
+        let selectedColor = availableColors[0].value;
+
+        function getMonthKey(year, month1Based) {
+            return `schedule_${year}_${month1Based}`;
         }
 
-        let scheduleData = getStorage(getMonthKey(), {});
+        const now = new Date();
+        let scheduleData = getStorage(getMonthKey(now.getFullYear(), now.getMonth() + 1), {});
         let importantData = getStorage('important', []);
         let notesData = getStorage('notes_v2', []);
         let targetEvent = getStorage('targetEvent', { title: 'Диплом', date: '' });
@@ -335,30 +406,58 @@
         let editingNoteId = null;
         let currentAttachments = [];
 
+        // Получение темы и цвета дня (совместимость со старым форматом)
+        function getDayThemeObj(dayData) {
+            if (!dayData) return { text: 'Свободно', color: 'var(--text-sub)' };
+            if (typeof dayData === 'string') {
+                let color = 'var(--color-cyan)';
+                if (dayData === 'Работа') color = 'var(--color-orange)';
+                if (dayData === 'Учеба') color = 'var(--color-purple)';
+                if (dayData === 'Дом') color = 'var(--color-green)';
+                return { text: dayData, color: color };
+            }
+            return { text: dayData.text || 'Свободно', color: dayData.color || 'var(--color-cyan)' };
+        }
+
+        // Инициализация палитры цветов в модалке
+        function initColorPalette() {
+            const container = document.getElementById('color-palette');
+            if (!container) return;
+            container.innerHTML = '';
+
+            availableColors.forEach((col, idx) => {
+                const dot = document.createElement('div');
+                dot.className = `color-dot ${col.value === selectedColor ? 'selected' : ''}`;
+                dot.style.backgroundColor = col.value;
+                dot.onclick = () => {
+                    haptic('light');
+                    selectedColor = col.value;
+                    document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('selected'));
+                    dot.classList.add('selected');
+                };
+                container.appendChild(dot);
+            });
+        }
+
         // Часы и Главный экран
         function updateClock() {
-            const now = new Date();
-            document.getElementById('clock').innerText = now.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
-            document.getElementById('date-display').innerText = now.toLocaleDateString('ru-RU', { weekday: 'long', day: 'numeric', month: 'long' });
+            const curr = new Date();
+            document.getElementById('clock').innerText = curr.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+            document.getElementById('date-display').innerText = curr.toLocaleDateString('ru-RU', { weekday: 'long', day: 'numeric', month: 'long' });
 
-            const todayNum = now.getDate();
-            const todayTheme = scheduleData[todayNum] || 'Не задано';
+            const todayNum = curr.getDate();
+            const todayObj = getDayThemeObj(scheduleData[todayNum]);
             const todayTitleEl = document.getElementById('today-focus-title');
             
             if (todayTitleEl) {
-                todayTitleEl.innerText = `${todayNum} ${monthNames[now.getMonth()].slice(0, 3)}: ${todayTheme}`;
-                let color = 'var(--text-sub)';
-                if (todayTheme === 'Работа') color = 'var(--accent-work)';
-                if (todayTheme === 'Учеба') color = 'var(--accent-study)';
-                if (todayTheme === 'Дом') color = 'var(--accent-home)';
-                if (todayTheme === 'Другое') color = 'var(--accent-other)';
-                todayTitleEl.style.color = color;
+                todayTitleEl.innerText = `${todayNum} ${monthNames[curr.getMonth()].slice(0, 3)}: ${todayObj.text}`;
+                todayTitleEl.style.color = todayObj.color;
             }
 
             const countBtn = document.getElementById('countdown-btn');
             if (countBtn) {
                 if (targetEvent && targetEvent.date) {
-                    const diff = Math.ceil((new Date(targetEvent.date) - now) / (1000 * 60 * 60 * 24));
+                    const diff = Math.ceil((new Date(targetEvent.date) - curr) / (1000 * 60 * 60 * 24));
                     countBtn.innerText = `🎯 ${targetEvent.title}: ${diff > 0 ? diff + ' дн.' : 'Сегодня!'}`;
                 } else {
                     countBtn.innerText = '🎯 Задать важную дату';
@@ -371,10 +470,10 @@
 
         // Календарь на Месяц
         function renderMonthCalendar() {
-            const now = new Date();
-            const year = now.getFullYear();
-            const month = now.getMonth();
-            const todayDate = now.getDate();
+            const curr = new Date();
+            const year = curr.getFullYear();
+            const month = curr.getMonth();
+            const todayDate = curr.getDate();
 
             document.getElementById('modal-schedule-title').innerText = `${monthNames[month]} ${year}`;
 
@@ -386,7 +485,6 @@
             const container = document.getElementById('days-container');
             container.innerHTML = '';
 
-            // Шапка дней недели
             weekDaysMin.forEach(d => {
                 const h = document.createElement('div');
                 h.className = 'calendar-header';
@@ -394,24 +492,16 @@
                 container.appendChild(h);
             });
 
-            // Пустые ячейки смещения
             for (let i = 0; i < firstDayIndex; i++) {
                 const empty = document.createElement('div');
                 empty.className = 'calendar-day past';
                 container.appendChild(empty);
             }
 
-            // Дни месяца
             for (let day = 1; day <= totalDays; day++) {
-                const theme = scheduleData[day] || 'Свободно';
+                const themeObj = getDayThemeObj(scheduleData[day]);
                 const isPast = day < todayDate;
                 const isToday = day === todayDate;
-
-                let colorClass = 'var(--text-sub)';
-                if (theme === 'Работа') colorClass = 'var(--accent-work)';
-                if (theme === 'Учеба') colorClass = 'var(--accent-study)';
-                if (theme === 'Дом') colorClass = 'var(--accent-home)';
-                if (theme === 'Другое') colorClass = 'var(--accent-other)';
 
                 const dayCard = document.createElement('div');
                 dayCard.className = `calendar-day ${isPast ? 'past' : ''} ${isToday ? 'today' : ''}`;
@@ -421,27 +511,37 @@
                         haptic('light');
                         selectedDayNumber = day;
                         document.getElementById('modal-theme-title').innerText = `Тема на ${day} ${monthNames[month].slice(0, 3).toLowerCase()}`;
+                        document.getElementById('custom-theme-input').value = themeObj.text !== 'Свободно' ? themeObj.text : '';
+                        selectedColor = themeObj.color !== 'var(--text-sub)' ? themeObj.color : availableColors[0].value;
+                        initColorPalette();
                         openModal('modal-theme');
                     };
                 }
 
                 dayCard.innerHTML = `
                     <div class="day-num">${day}</div>
-                    <div class="day-tag" style="color: ${colorClass}">${theme}</div>
+                    <div class="day-tag" style="color: ${themeObj.color}">${themeObj.text}</div>
                 `;
                 container.appendChild(dayCard);
             }
         }
 
-        function selectTheme(themeName) {
+        function applyPreset(text, color) {
             haptic('medium');
-            if (themeName === 'Другое') {
-                const custom = prompt("Введи свою тему дня:");
-                if (custom) scheduleData[selectedDayNumber] = custom;
-            } else {
-                scheduleData[selectedDayNumber] = themeName;
-            }
-            setStorage(getMonthKey(), scheduleData);
+            scheduleData[selectedDayNumber] = { text: text, color: color };
+            setStorage(getMonthKey(now.getFullYear(), now.getMonth() + 1), scheduleData);
+            renderMonthCalendar();
+            updateClock();
+            closeModal('modal-theme');
+        }
+
+        function saveCustomTheme() {
+            haptic('medium');
+            const inputVal = document.getElementById('custom-theme-input').value.trim();
+            const finalText = inputVal || 'Занято';
+            
+            scheduleData[selectedDayNumber] = { text: finalText, color: selectedColor };
+            setStorage(getMonthKey(now.getFullYear(), now.getMonth() + 1), scheduleData);
             renderMonthCalendar();
             updateClock();
             closeModal('modal-theme');
@@ -627,10 +727,65 @@
             }
         }
 
-        // Старт
+        // 📊 СТАТИСТИКА ЗА ПРОШЛЫЙ МЕСЯЦ (Обновляется 1-го числа)
+        function renderPastMonthStats() {
+            const curr = new Date();
+            let prevMonthIdx = curr.getMonth() - 1;
+            let prevYear = curr.getFullYear();
+
+            if (prevMonthIdx < 0) {
+                prevMonthIdx = 11;
+                prevYear--;
+            }
+
+            const prevStorageKey = getMonthKey(prevYear, prevMonthIdx + 1);
+            const prevData = getStorage(prevStorageKey, {});
+            const totalDaysInPrevMonth = new Date(prevYear, prevMonthIdx + 1, 0).getDate();
+            const monthName = monthNames[prevMonthIdx];
+
+            const statsMap = {};
+            let trackedDaysCount = 0;
+
+            for (let day = 1; day <= totalDaysInPrevMonth; day++) {
+                if (prevData[day]) {
+                    const obj = getDayThemeObj(prevData[day]);
+                    const key = obj.text;
+                    if (!statsMap[key]) {
+                        statsMap[key] = { count: 0, color: obj.color };
+                    }
+                    statsMap[key].count++;
+                    trackedDaysCount++;
+                }
+            }
+
+            const container = document.getElementById('past-month-stats-container');
+            if (!container) return;
+
+            if (trackedDaysCount === 0) {
+                container.innerHTML = `<div style="font-size: 13px; color: var(--text-sub);">В <b>${monthName}е</b> не было отмеченных дней.</div>`;
+                return;
+            }
+
+            let html = `<div style="font-size: 13px; color: var(--text-sub); margin-bottom: 8px;">Итоги за <b>${monthName}</b> (${trackedDaysCount} дн.):</div>`;
+            
+            for (const [themeName, info] of Object.entries(statsMap)) {
+                html += `
+                    <div class="stat-badge">
+                        <span class="stat-dot" style="background-color: ${info.color};"></span>
+                        <span>${themeName}: <b>${info.count} дн.</b></span>
+                    </div>
+                `;
+            }
+
+            container.innerHTML = html;
+        }
+
+        // Инициализация при запуске
         renderMonthCalendar();
         renderImportant();
         renderNotesList();
+        renderPastMonthStats();
+        initColorPalette();
     </script>
 </body>
 </html>
