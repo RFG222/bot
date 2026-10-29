@@ -235,11 +235,18 @@
             <div class="widget-sub">Быстрый блокнот</div>
         </div>
 
-        <!-- 5. БОТ (Копилка) -->
-        <div class="widget" onclick="openModal('modal-stash')">
-            <div class="widget-title">Копилка 📥</div>
-            <div class="widget-value" style="font-size: 15px;">БД чата</div>
-            <div class="widget-sub">Мысли и медиа</div>
+                <!-- МОДАЛКА: БОТ КОПИЛКА -->
+        <div class="modal" id="modal-stash">
+            <div class="modal-content">
+                <h3 style="margin-top: 0;">Копилка из бота 📥</h3>
+                
+                <div id="stash-list" style="margin-bottom: 15px; max-height: 50vh; overflow-y: auto; text-align: left;">
+                    <div style="text-align:center; color: var(--text-sub);">Загрузка...</div>
+                </div>
+        
+                <button class="btn-option btn-primary" onclick="loadStashData()">🔄 Обновить</button>
+                <button class="btn-option btn-close" onclick="closeModal('modal-stash')">Закрыть</button>
+            </div>
         </div>
 
         <!-- 6. КОРЗИНА (10 ДНЕЙ) -->
@@ -1091,6 +1098,53 @@
                 renderAll();
             }
         });
+
+
+                // --- ЗАГРУЗКА ДАННЫХ ИЗ БОТА ---
+        function loadStashData() {
+            haptic('light');
+            const list = document.getElementById('stash-list');
+            list.innerHTML = '<div style="text-align:center; color: var(--text-sub);">Загрузка данных с сервера...</div>';
+        
+            // Обращаемся к нашему серверу Ubuntu по IP и порту 8000
+            fetch('http://178.22.24.243:8000/api/stash')
+                .then(response => response.json())
+                .then(data => {
+                    list.innerHTML = '';
+                    if (data.length === 0) {
+                        list.innerHTML = '<div style="font-size: 13px; color: var(--text-sub); text-align: center;">Копилка пуста</div>';
+                        return;
+                    }
+                    // Отрисовываем каждое сообщение
+                    data.forEach(item => {
+                        const div = document.createElement('div');
+                        div.className = 'list-item';
+                        div.style.flexDirection = 'column';
+                        div.style.alignItems = 'flex-start';
+                        div.style.gap = '4px';
+        
+                        let contentHtml = '';
+                        if (item.type === 'text') {
+                            contentHtml = `<div style="font-weight: 600;">${item.content}</div>`;
+                        } else if (item.type === 'photo') {
+                            contentHtml = `<div style="font-weight: 600; color: var(--theme-accent);">📸 Фотография</div>`;
+                        }
+        
+                        div.innerHTML = `
+                            ${contentHtml}
+                            <div style="font-size: 10px; color: var(--text-sub);">${item.date}</div>
+                        `;
+                        list.appendChild(div);
+                    });
+                })
+                .catch(err => {
+                    console.error('Ошибка fetch:', err);
+                    list.innerHTML = `<div style="color: var(--color-red); font-size: 13px; text-align:center;">
+                        ⚠️ Ошибка соединения с сервером.<br>Скорее всего, браузер блокирует HTTP-запрос (Mixed Content).
+                    </div>`;
+                });
+        }
+        
     </script>
 </body>
 </html>
