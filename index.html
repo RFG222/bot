@@ -235,18 +235,11 @@
             <div class="widget-sub">Быстрый блокнот</div>
         </div>
 
-                <!-- МОДАЛКА: БОТ КОПИЛКА -->
-        <div class="modal" id="modal-stash">
-            <div class="modal-content">
-                <h3 style="margin-top: 0;">Копилка из бота 📥</h3>
-                
-                <div id="stash-list" style="margin-bottom: 15px; max-height: 50vh; overflow-y: auto; text-align: left;">
-                    <div style="text-align:center; color: var(--text-sub);">Загрузка...</div>
-                </div>
-        
-                <button class="btn-option btn-primary" onclick="loadStashData()">🔄 Обновить</button>
-                <button class="btn-option btn-close" onclick="closeModal('modal-stash')">Закрыть</button>
-            </div>
+        <!-- 5. БОТ (Копилка) -->
+        <div class="widget" onclick="openModal('modal-stash'); loadStashData();">
+            <div class="widget-title">Копилка 📥</div>
+            <div class="widget-value" style="font-size: 15px;">БД чата</div>
+            <div class="widget-sub">Мысли и медиа</div>
         </div>
 
         <!-- 6. КОРЗИНА (10 ДНЕЙ) -->
@@ -367,11 +360,14 @@
     <!-- МОДАЛКА: БОТ КОПИЛКА -->
     <div class="modal" id="modal-stash">
         <div class="modal-content">
-            <h3 style="margin-top: 0;">Копилка из бота</h3>
-            <p style="font-size: 13px; color: var(--text-sub); text-align: left; line-height: 1.4;">
-                Все входящие сообщения, мысли и фотографии, которые ты отправляешь боту в чате, автоматически записываются в базу данных SQLite (<code>dashboard.db</code>) на твоем сервере.
-            </p>
-            <button class="btn-option btn-close" onclick="closeModal('modal-stash')">Понятно</button>
+            <h3 style="margin-top: 0;">Копилка из бота 📥</h3>
+            
+            <div id="stash-list" style="margin-bottom: 15px; max-height: 50vh; overflow-y: auto; text-align: left;">
+                <div style="text-align:center; color: var(--text-sub);">Загрузка...</div>
+            </div>
+    
+            <button class="btn-option btn-primary" onclick="loadStashData()">🔄 Обновить</button>
+            <button class="btn-option btn-close" onclick="closeModal('modal-stash')">Закрыть</button>
         </div>
     </div>
 
@@ -1099,8 +1095,7 @@
             }
         });
 
-
-                // --- ЗАГРУЗКА ДАННЫХ ИЗ БОТА ---
+        // --- ЗАГРУЗКА ДАННЫХ ИЗ БОТА ---
         function loadStashData() {
             haptic('light');
             const list = document.getElementById('stash-list');
