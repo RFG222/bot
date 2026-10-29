@@ -1102,7 +1102,7 @@
             list.innerHTML = '<div style="text-align:center; color: var(--text-sub);">Загрузка данных с сервера...</div>';
         
             // Обращаемся к нашему серверу Ubuntu по IP и порту 8000
-            fetch('https://mathematical-necklace-instance-painted.trycloudflare.com/api/stash')
+            fetch('http://178.22.24.243:8000/api/stash')
                 .then(response => response.json())
                 .then(data => {
                     list.innerHTML = '';
